@@ -5,8 +5,8 @@ stdenv.mkDerivation {
 
     src = ../.;
 
-    buildInputs = [ gnuradio (gnuradio.unwrapped.python.withPackages (ps: [gnuradio]))];
-    propagatedBuildInputs = [ gnuradio (gnuradio.unwrapped.python.withPackages (ps: [gnuradio]))];
+    buildInputs = [ gnuradio (gnuradio.unwrapped.python.withPackages (ps: [gnuradio])) ];
+    propagatedBuildInputs = [ gnuradio (gnuradio.unwrapped.python.withPackages (ps: [gnuradio])) ];
   
     inherit (gnuradio) python;
     
@@ -16,6 +16,11 @@ stdenv.mkDerivation {
       patchShebangs recv_and_demod.py
     '';
 
+    shellHook = ''
+      PYTHONPATH='${gnuradio}/lib/python3.8/site-packages/'     
+    '';
+
+    # ${PYTHONPATH+":"}$PYTHONPATH
     installPhase = ''
       mkdir -p $out/bin
       cp ./recv_and_demod.py $out/bin
