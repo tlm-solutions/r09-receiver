@@ -11,6 +11,7 @@ nix-shell  -p '(gnuradio3_8.override { extraPackages = [ (callPackage ./reveng.n
 
 ```
     $ nix build .\#packages.x86_64-linux.reveng
+    $ nix build .\#packages.x86_64-linux.gnuradio3_8
 ```
 
 

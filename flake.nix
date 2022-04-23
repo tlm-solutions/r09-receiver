@@ -12,6 +12,7 @@
       in rec {
         checks = packages;
         packages.reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
+        packages.gnuradio3_8 = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
       }
     );
 }
