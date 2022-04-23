@@ -9,30 +9,23 @@
   outputs = inputs@{self, utils, nixpkgs, ...}: 
     utils.lib.eachDefaultSystem (system: let 
       pkgs = nixpkgs.legacyPackages.${system};
+  
+      new_packages = {
+        reveng = pkgs.callPackage ./pkgs/reveng.nix {};
+        custom-gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix {};
+
+        gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
+          gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix {};
+          gnuradio_input_file = "recv_and_demod_soapy.grc";
+        };
+
+        telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix {};
+      };
+
       in rec {
         checks = packages;
-        packages = {
-          reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
-          custom-gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
-
-          gnuradio-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio-decode.nix {
-            gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
-            gnuradio_input_file = "recv_and_demod_soapy.grc";
-          };
-
-          telegram-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/telegram-decode.nix {};
-        };
-        overlay = (final: prev: {
-          reveng = packages.${system}.reveng;
-          custom-gnuradio = packages.${system}.custom-gnuradio;
-
-          gnuradio-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio-decode.nix {
-            gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
-            gnuradio_input_file = "recv_and_demod_soapy.grc";
-          };
-
-          telegram-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/telegram-decode.nix {};
-        });
+        packages = new_packages;
+        overlay = (final: prev: new_packages);
       }
-    );
+   );
 }
