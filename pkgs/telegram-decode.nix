@@ -5,8 +5,8 @@ stdenv.mkDerivation {
 
   src = ../.;
 
-  buildInputs = [ pkgs.python39Packages.crcmod ];
-  propagatedBuildInputs = [ pkgs.python39Packages.crcmod ];
+  buildInputs = [ (pkgs.python39.withPackages (ps: with ps; [ crcmod ])) ];
+  propagatedBuildInputs = [ (pkgs.python39.withPackages (ps: with ps; [ crcmod ])) ];
 
   installPhase = ''
     mkdir -p $out/bin
