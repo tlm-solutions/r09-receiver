@@ -1,6 +1,15 @@
-{ stdenv, lib, fetchFromGitHub, cmake, pkgconfig, gnuradio3_8
-, makeWrapper, log4cpp, volk, icu
-, swig, gmp
+{ stdenv
+, lib
+, fetchFromGitHub
+, cmake
+, pkgconfig
+, gnuradio3_8
+, makeWrapper
+, log4cpp
+, volk
+, icu
+, swig
+, gmp
 }:
 
 stdenv.mkDerivation {
