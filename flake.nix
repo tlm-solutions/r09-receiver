@@ -14,10 +14,24 @@
         packages = {
           reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
           custom-gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+
+          gnuradio-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio-decode.nix {
+            gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+            gnuradio_input_file = "recv_and_demod_soapy.grc";
+          };
+
+          telegram-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/telegram-decode.nix {};
         };
         overlay = (final: prev: {
-          reveng = pkgs.callPackage ./pkgs/reveng.nix { };
-          custom-gnuradio = pkgs.callPackage ./pkgs/reveng.nix { };
+          reveng = packages.${system}.reveng;
+          custom-gnuradio = packages.${system}.custom-gnuradio;
+
+          gnuradio-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio-decode.nix {
+            gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+            gnuradio_input_file = "recv_and_demod_soapy.grc";
+          };
+
+          telegram-decode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/telegram-decode.nix {};
         });
       }
     );
