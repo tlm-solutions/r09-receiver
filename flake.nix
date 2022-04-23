@@ -11,8 +11,14 @@
       pkgs = nixpkgs.legacyPackages.${system};
       in rec {
         checks = packages;
-        packages.reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
-        packages.gnuradio3_8 = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+        packages = {
+          reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
+          gnuradio3_8 = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+        };
+        overlay = (final: prev: {
+          reveng = pkgs.callPackage ./pkgs/reveng.nix { };
+          gnuradio3_8 = pkgs.callPackage ./pkgs/reveng.nix { };
+        });
       }
     );
 }
