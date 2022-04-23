@@ -13,11 +13,11 @@
         checks = packages;
         packages = {
           reveng = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/reveng.nix {};
-          gnuradio3_8 = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
+          custom-gnuradio = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/gnuradio.nix {};
         };
         overlay = (final: prev: {
           reveng = pkgs.callPackage ./pkgs/reveng.nix { };
-          gnuradio3_8 = pkgs.callPackage ./pkgs/reveng.nix { };
+          custom-gnuradio = pkgs.callPackage ./pkgs/reveng.nix { };
         });
       }
     );
