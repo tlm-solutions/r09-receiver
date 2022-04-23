@@ -10,6 +10,6 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/bin
-    cp ./recv4.py $out/bin
+    cp decode_telegrams.py $out/bin
   '';
 }
