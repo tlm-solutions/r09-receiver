@@ -25,7 +25,16 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [
-    cmake gnuradio3_8.unwrapped gnuradio3_8.unwrapped.boost gnuradio3_8.unwrapped.python makeWrapper log4cpp swig gmp volk icu
+    cmake
+    gnuradio3_8.unwrapped
+    gnuradio3_8.unwrapped.boost
+    gnuradio3_8.unwrapped.python
+    makeWrapper
+    log4cpp
+    swig
+    gmp
+    volk
+    icu
   ];
 
   postInstall = ''

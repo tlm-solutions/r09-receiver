@@ -1,15 +1,15 @@
-{ pkgs, lib, stdenv}:
+{ pkgs, lib, stdenv }:
 stdenv.mkDerivation {
-    name = "telegram-decode";
-    version = "0.1.0";
+  name = "telegram-decode";
+  version = "0.1.0";
 
-    src = ../.;
+  src = ../.;
 
-    buildInputs = [ pkgs.python39Packages.crcmod ];
-    propagatedBuildInputs = [ pkgs.python39Packages.crcmod ];
+  buildInputs = [ pkgs.python39Packages.crcmod ];
+  propagatedBuildInputs = [ pkgs.python39Packages.crcmod ];
 
-    installPhase = ''
-      mkdir -p $out/bin
-      cp ./recv4.py $out/bin
-    '';
+  installPhase = ''
+    mkdir -p $out/bin
+    cp ./recv4.py $out/bin
+  '';
 }

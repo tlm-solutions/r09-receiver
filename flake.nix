@@ -6,26 +6,28 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
   };
 
-  outputs = inputs@{self, utils, nixpkgs, ...}: 
-    utils.lib.eachDefaultSystem (system: let 
-      pkgs = nixpkgs.legacyPackages.${system};
-  
-      new_packages = {
-        reveng = pkgs.callPackage ./pkgs/reveng.nix {};
-        custom-gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix {};
+  outputs = inputs@{ self, utils, nixpkgs, ... }:
+    utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
 
-        gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
-          gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix {};
-          gnuradio_input_file = "recv_and_demod_soapy.grc";
+        new_packages = {
+          reveng = pkgs.callPackage ./pkgs/reveng.nix { };
+          custom-gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
+
+          gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
+            gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
+            gnuradio_input_file = "recv_and_demod_soapy.grc";
+          };
+
+          telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
         };
 
-        telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix {};
-      };
-
-      in rec {
+      in
+      rec {
         checks = packages;
         packages = new_packages;
         overlay = (final: prev: new_packages);
       }
-   );
+    );
 }
