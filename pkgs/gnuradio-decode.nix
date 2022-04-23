@@ -1,6 +1,6 @@
 { pkgs, lib, gnuradio, stdenv, gnuradio_input_file }:
 stdenv.mkDerivation {
-  name = "gnuradio-python-soruce";
+  name = "gnuradio-python-source";
   version = "0.1.0";
 
   src = ../.;
