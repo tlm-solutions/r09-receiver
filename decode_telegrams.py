@@ -189,6 +189,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = (ip, port)
 s.bind(server_address)
 
+print("[*] Started Telegram Decoder")
+
 while True:
     data, address = s.recvfrom(4096)
 
