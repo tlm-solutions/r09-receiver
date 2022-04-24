@@ -78,7 +78,7 @@ def get_knotenpunkt(nummer):
             1301: "Körnerplatz/Grundstr.",
             # AP 3.4.1(.2) DDL184
 
-            1401: "Liststraße",
+            1404: "Liststraße",
 
             1501: "Hansastraße/Eisenbahnstraße",
             1504: "Friedensstraße"
