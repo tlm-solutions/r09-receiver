@@ -68,6 +68,7 @@ def get_knotenpunkt(nummer):
             1102: "Bischofsweg",
             1103: "Tannenstraße",
             1104: "Staufenbergallee",
+            1151: "S-Bahnhof Bischofsplatz",
 
             1202: "LSA BTZ <-> Pulsnitzer",
             1203: "Pulsnitzer Straße",
@@ -77,7 +78,10 @@ def get_knotenpunkt(nummer):
             1301: "Körnerplatz/Grundstr.",
             # AP 3.4.1(.2) DDL184
 
-            1501: "Hansastraße/Eisenbahnstraße"
+            1401: "Liststraße",
+
+            1501: "Hansastraße/Eisenbahnstraße",
+            1504: "Friedensstraße"
             }
 
     try:
