@@ -29,5 +29,25 @@
         packages = new_packages;
         overlay = (final: prev: new_packages);
       }
-    );
+    ) // {
+      hydraJobs =
+        let
+          hydraSystems = [
+            "x86_64-linux"
+            "aarch64-linux"
+          ];
+          hydraBlacklist = [
+            # not an attrset
+            "custom-gnuradio"
+          ];
+        in builtins.foldl' (hydraJobs: system:
+          builtins.foldl' (hydraJobs: pkgName:
+            if builtins.elem pkgName hydraBlacklist
+            then hydraJobs
+            else nixpkgs.lib.recursiveUpdate hydraJobs {
+              ${pkgName}.${system} = self.packages.${system}.${pkgName};
+            }
+          ) hydraJobs (builtins.attrNames self.packages.${system})
+        ) {} hydraSystems;
+    };
 }
