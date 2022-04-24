@@ -204,15 +204,6 @@ while True:
             bits.append(0)
         i += 2
 
-    # print(bits)
-    payload = []
-    i = 8
-    payload.append(bitvec_to_bytes(bits[0:8]))
-    while bits[i] == 1 and len(bits) - i >= 8:
-        payload.append(bitvec_to_bytes(bits[i+1:i+9]))
-        i += 9
-
-    """
     # assume a max length of 20 bytes
     # 20 * 8 + 19 bits inbetween
     payload = []
@@ -220,10 +211,9 @@ while True:
     while i <= 180:
         payload.append(bitvec_to_bytes(data[i+1:i+9]))
         i += 9
-    """
 
-    #print("======")
-    #print(list(map(hex, payload)))
+    # print("======")
+    # print(list(map(hex, payload)))
 
     return_code = decode(payload)
     # try to decode every 1 bit error
@@ -240,4 +230,3 @@ while True:
 
     if return_code == True:
         print("======")
-

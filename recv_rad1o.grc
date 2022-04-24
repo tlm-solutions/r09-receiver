@@ -1,6 +1,6 @@
 options:
   parameters:
-    author: marenz
+    author: ''
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -15,7 +15,7 @@ options:
     output_language: python
     placement: (0,0)
     qt_qss_theme: ''
-    realtime_scheduling: '1'
+    realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: run
@@ -32,18 +32,6 @@ options:
     state: enabled
 
 blocks:
-- name: baud
-  id: variable
-  parameters:
-    comment: ''
-    value: '2400'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [408, 752.0]
-    rotation: 0
-    state: true
 - name: bw
   id: variable
   parameters:
@@ -53,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 400.0]
+    coordinate: [320, 76.0]
     rotation: 0
     state: true
 - name: decimation
@@ -65,7 +53,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 480.0]
+    coordinate: [288, 12.0]
     rotation: 0
     state: true
 - name: freq
@@ -77,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 256.0]
+    coordinate: [400, 76.0]
     rotation: 0
     state: true
 - name: fsk_deviation_hz
@@ -89,33 +77,21 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 624.0]
+    coordinate: [200, 76.0]
     rotation: 0
     state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: '1000000'
+    value: '2000000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 336.0]
+    coordinate: [200, 12.0]
     rotation: 0
     state: enabled
-- name: sps
-  id: variable
-  parameters:
-    comment: ''
-    value: samp_rate/decimation/fsk_deviation_hz
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [408, 184.0]
-    rotation: 0
-    state: true
 - name: transition_bw
   id: variable
   parameters:
@@ -125,41 +101,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 688.0]
+    coordinate: [384, 12.0]
     rotation: 0
     state: true
-- name: update_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: '10'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [408, 544.0]
-    rotation: 0
-    state: true
-- name: analog_pwr_squelch_xx_0
-  id: analog_pwr_squelch_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha: 1e-4
-    comment: ''
-    gate: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    ramp: '0'
-    threshold: '-35'
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1064, 100.0]
-    rotation: 0
-    state: disabled
 - name: analog_quadrature_demod_cf_0
   id: analog_quadrature_demod_cf
   parameters:
@@ -173,41 +117,41 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1216, 300.0]
+    coordinate: [584, 188.0]
     rotation: 0
     state: true
-- name: analog_simple_squelch_cc_0
-  id: analog_simple_squelch_cc
+- name: analog_quadrature_demod_cf_0_0
+  id: analog_quadrature_demod_cf
   parameters:
     affinity: ''
     alias: ''
-    alpha: '1'
     comment: ''
+    gain: '4'
     maxoutbuf: '0'
     minoutbuf: '0'
-    threshold: '-45'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 292.0]
+    coordinate: [1080, 188.0]
     rotation: 0
-    state: disabled
-- name: analog_simple_squelch_cc_1
-  id: analog_simple_squelch_cc
+    state: true
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
   parameters:
     affinity: ''
     alias: ''
-    alpha: '0.1'
     comment: ''
+    const: '-1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    threshold: '-40'
+    type: float
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 464.0]
+    coordinate: [1072, 372.0]
     rotation: 0
     state: true
 - name: blocks_socket_pdu_0
@@ -227,24 +171,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2384, 300.0]
-    rotation: 0
-    state: true
-- name: blocks_tagged_stream_to_pdu_0
-  id: blocks_tagged_stream_to_pdu
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    tag: packet_len
-    type: byte
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [2120, 252.0]
+    coordinate: [888, 548.0]
     rotation: 0
     state: true
 - name: blocks_tagged_stream_to_pdu_1
@@ -261,10 +188,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2120, 188.0]
+    coordinate: [640, 572.0]
     rotation: 0
     state: true
-- name: digital_binary_slicer_fb_1
+- name: digital_binary_slicer_fb_0
   id: digital_binary_slicer_fb
   parameters:
     affinity: ''
@@ -276,34 +203,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1760, 256.0]
+    coordinate: [1232, 376.0]
     rotation: 0
     state: true
-- name: digital_symbol_sync_xx_0
-  id: digital_symbol_sync_xx
+- name: digital_clock_recovery_mm_xx_0
+  id: digital_clock_recovery_mm_xx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    constellation: digital.constellation_bpsk().base()
-    damping: '1.0'
-    loop_bw: '0.045'
-    max_dev: '1.5'
+    gain_mu: '0.175'
+    gain_omega: 0.25*0.175*0.175
     maxoutbuf: '0'
     minoutbuf: '0'
-    nfilters: '128'
-    osps: '1'
-    pfb_mf_taps: '[]'
-    resamp_type: digital.IR_MMSE_8TAP
-    sps: sps/2
-    ted_gain: '1.0'
-    ted_type: digital.TED_GARDNER
-    type: ff
+    mu: '0.5'
+    omega: samp_rate/decimation/2400.
+    omega_relative_limit: '0.005'
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 244.0]
+    coordinate: [848, 340.0]
     rotation: 0
     state: enabled
 - name: freq_xlating_fir_filter_xxx_0_0
@@ -324,7 +245,73 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 276.0]
+    coordinate: [328, 164.0]
+    rotation: 0
+    state: enabled
+- name: high_pass_filter_0
+  id: high_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '100'
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate/decimation
+    type: fir_filter_fff
+    width: '50'
+    win: firdes.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [760, 140.0]
+    rotation: 0
+    state: enabled
+- name: high_pass_filter_0_0
+  id: high_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '1'
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate/decimation
+    type: fir_filter_fff
+    width: '0.5'
+    win: firdes.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 324.0]
+    rotation: 0
+    state: enabled
+- name: hilbert_fc_0
+  id: hilbert_fc
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_taps: '65'
+    win: firdes.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [944, 188.0]
     rotation: 0
     state: true
 - name: osmosdr_source_0
@@ -681,195 +668,67 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 188.0]
+    coordinate: [24, 156.0]
     rotation: 0
     state: enabled
-- name: qtgui_sink_x_0
-  id: qtgui_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    bw: samp_rate
-    comment: ''
-    fc: '0'
-    fftsize: '1024'
-    gui_hint: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
-    plotconst: 'True'
-    plotfreq: 'True'
-    plottime: 'True'
-    plotwaterfall: 'True'
-    rate: '10'
-    showports: 'False'
-    showrf: 'False'
-    type: complex
-    wintype: firdes.WIN_BLACKMAN_hARRIS
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1232, 460.0]
-    rotation: 0
-    state: disabled
-- name: qtgui_time_sink_x_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: '1024'
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '1'
-    ymin: '-1'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1480, 428.0]
-    rotation: 0
-    state: disabled
-- name: reveng_correlate_access_code_xx_ts_fl_0
-  id: reveng_correlate_access_code_xx_ts_fl
-  parameters:
-    access_code: '00110011001101010101010101010100'
-    affinity: ''
-    alias: ''
-    comment: ''
-    len: '60'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    tagname: packet_len
-    threshold: '2'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1896, 228.0]
-    rotation: 0
-    state: true
 - name: reveng_correlate_access_code_xx_ts_fl_1
   id: reveng_correlate_access_code_xx_ts_fl
   parameters:
-    access_code: '11001100110010101010101010101011'
+    access_code: '1111110000000001'
     affinity: ''
     alias: ''
     comment: ''
-    len: '60'
+    len: '20'
     maxoutbuf: '0'
     minoutbuf: '0'
     tagname: packet_len
-    threshold: '2'
+    threshold: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1896, 100.0]
+    coordinate: [384, 548.0]
     rotation: 0
     state: true
+- name: root_raised_cosine_filter_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: '0.35'
+    comment: ''
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: '4'
+    samp_rate: samp_rate/decimation
+    sym_rate: samp_rate/decimation/2400
+    type: fir_filter_fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [624, 332.0]
+    rotation: 0
+    state: enabled
 
 connections:
-- [analog_pwr_squelch_xx_0, '0', analog_quadrature_demod_cf_0, '0']
-- [analog_pwr_squelch_xx_0, '0', qtgui_sink_x_0, '0']
-- [analog_quadrature_demod_cf_0, '0', digital_symbol_sync_xx_0, '0']
-- [analog_quadrature_demod_cf_0, '0', qtgui_time_sink_x_0, '0']
-- [analog_simple_squelch_cc_0, '0', analog_quadrature_demod_cf_0, '0']
-- [analog_simple_squelch_cc_0, '0', qtgui_sink_x_0, '0']
-- [analog_simple_squelch_cc_1, '0', analog_quadrature_demod_cf_0, '0']
-- [analog_simple_squelch_cc_1, '0', qtgui_sink_x_0, '0']
+- [analog_quadrature_demod_cf_0, '0', high_pass_filter_0, '0']
+- [analog_quadrature_demod_cf_0_0, '0', high_pass_filter_0_0, '0']
+- [blocks_multiply_const_vxx_0, '0', digital_binary_slicer_fb_0, '0']
 - [blocks_socket_pdu_0, pdus, blocks_socket_pdu_0, pdus]
-- [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [blocks_tagged_stream_to_pdu_1, pdus, blocks_socket_pdu_0, pdus]
-- [digital_binary_slicer_fb_1, '0', reveng_correlate_access_code_xx_ts_fl_0, '0']
-- [digital_binary_slicer_fb_1, '0', reveng_correlate_access_code_xx_ts_fl_1, '0']
-- [digital_symbol_sync_xx_0, '0', digital_binary_slicer_fb_1, '0']
-- [freq_xlating_fir_filter_xxx_0_0, '0', analog_pwr_squelch_xx_0, '0']
-- [freq_xlating_fir_filter_xxx_0_0, '0', analog_simple_squelch_cc_0, '0']
-- [freq_xlating_fir_filter_xxx_0_0, '0', analog_simple_squelch_cc_1, '0']
+- [digital_binary_slicer_fb_0, '0', reveng_correlate_access_code_xx_ts_fl_1, '0']
+- [digital_clock_recovery_mm_xx_0, '0', blocks_multiply_const_vxx_0, '0']
+- [freq_xlating_fir_filter_xxx_0_0, '0', analog_quadrature_demod_cf_0, '0']
+- [high_pass_filter_0, '0', hilbert_fc_0, '0']
+- [high_pass_filter_0_0, '0', root_raised_cosine_filter_0, '0']
+- [hilbert_fc_0, '0', analog_quadrature_demod_cf_0_0, '0']
 - [osmosdr_source_0, '0', freq_xlating_fir_filter_xxx_0_0, '0']
-- [reveng_correlate_access_code_xx_ts_fl_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [reveng_correlate_access_code_xx_ts_fl_1, '0', blocks_tagged_stream_to_pdu_1, '0']
+- [root_raised_cosine_filter_0, '0', digital_clock_recovery_mm_xx_0, '0']
 
 metadata:
   file_format: 1

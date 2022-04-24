@@ -17,7 +17,7 @@
 
           gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
             gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
-            gnuradio_input_file = "recv_and_demod_brotzeitbox.grc";
+            gnuradio_input_file = "recv_rad1o.grc";
           };
 
           telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
