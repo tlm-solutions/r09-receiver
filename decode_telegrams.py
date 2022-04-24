@@ -6,6 +6,8 @@ import socket
 import crcmod
 import sys
 
+host = "academicstrokes.com"
+
 anmeldung_typ = {
         0: "Vor",
         1: "An",
@@ -176,7 +178,7 @@ def decode(payload):
                 }
 
                 print("Making the request")
-                r = requests.post("http://127.0.0.1:8080/formatted_telegram", json=req_payload)
+                r = requests.post("http://{}/formatted_telegram".format(host), json=req_payload)
                 print("Response:", r);
 
 
@@ -190,7 +192,7 @@ def decode(payload):
                     "station_id": 100,
                     "raw_data": " ".join(payload)
                 }
-                r = requests.post("http://127.0.0.1:8080/raw", json=req_payload)
+                r = requests.post("http://{}/raw".format(host), json=req_payload)
                 print("Response:", r);
 
         else:
