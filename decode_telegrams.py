@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import requests
 import socket
 import crcmod
 import sys
@@ -152,9 +153,46 @@ def decode(payload):
                 print("Liniennummer: {}, Kursnummer: {}, Zielnummer: {}, t{}".format(LN, KN, ZN, deviation))
                 print("ZV: {}, ZW: {}, MP: {} / {}, MP: {}, PR: {}, HA: {}, R: {}, ZL: {}".format(ZV, ZW, hex(MP >> 2), MP & 0x3, hex(MP), PR, HA, R, ZL))
                 print("Knotenpunkt: {} / {} / {}".format(get_knotenpunkt(KnotenPunkt), KnotenPunktNummer, anmeldung_typ[MP & 0x3]))
+
+                req_payload = {
+                    "time_stamp": time.time(),
+                    "lat": 51.027107,
+                    "lon": 13.723566,
+                    "station_id": 100,
+                    "line": LN,
+                    "course_number": KN,
+                    "destination_number": ZN,
+                    "zv": ZF,
+                    "zw": ZF,
+                    "mp": MP,
+                    "ha": HA,
+                    "ln": LN,
+                    "kn": KN,
+                    "zn": ZN,
+                    "r": R,
+                    "zl": ZL,
+                    "junction": KnotenPunkt,
+                    "junction_number": KnotenPunktNummer
+                }
+
+                print("Making the request")
+                r = requests.post("http://127.0.0.1:8080/formatted_telegram", json=req_payload)
+                print("Response:", r);
+
+
             else:
                 print("Mode: {}, Type: {}, Length: {}".format(mode, r09_type, length))
                 print(payload)
+                req_payload = {
+                    "time_stamp": time.time(),
+                    "lat": 51.027107,
+                    "lon": 13.723566,
+                    "station_id": 100,
+                    "raw_data": " ".join(payload)
+                }
+                r = requests.post("http://127.0.0.1:8080/raw", json=req_payload)
+                print("Response:", r);
+
         else:
             p = list(map(hex, payload))
             if mode == 9:
