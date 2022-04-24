@@ -1,5 +1,5 @@
 {
-  description = "build script for the lingua-franca alarm clock";
+  description = "Dump DVBAG public transport radio";
 
   inputs = {
     utils.url = "github:numtide/flake-utils";
