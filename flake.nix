@@ -1,5 +1,5 @@
 {
-  description = "build script for the lingua-franca alarm clock";
+  description = "Dump DVBAG public transport radio";
 
   inputs = {
     utils.url = "github:numtide/flake-utils";
@@ -17,7 +17,7 @@
 
           gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
             gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
-            gnuradio_input_file = "recv_rad1o.grc";
+            gnuradio_input_file = ./recv_soapy.grc;
           };
 
           telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
@@ -29,5 +29,25 @@
         packages = new_packages;
         overlay = (final: prev: new_packages);
       }
-    );
+    ) // {
+      hydraJobs =
+        let
+          hydraSystems = [
+            "x86_64-linux"
+            "aarch64-linux"
+          ];
+          hydraBlacklist = [
+            # not an attrset
+            "custom-gnuradio"
+          ];
+        in builtins.foldl' (hydraJobs: system:
+          builtins.foldl' (hydraJobs: pkgName:
+            if builtins.elem pkgName hydraBlacklist
+            then hydraJobs
+            else nixpkgs.lib.recursiveUpdate hydraJobs {
+              ${pkgName}.${system} = self.packages.${system}.${pkgName};
+            }
+          ) hydraJobs (builtins.attrNames self.packages.${system})
+        ) {} hydraSystems;
+    };
 }
