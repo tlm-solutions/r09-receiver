@@ -169,7 +169,7 @@ def decode(payload):
                     "zv": ZV,
                     "zw": ZW,
                     "mp": MP,
-                    "pr" PR,
+                    "pr": PR,
                     "ha": HA,
                     "ln": LN,
                     "kn": KN,
