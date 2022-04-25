@@ -150,12 +150,13 @@ def decode(payload):
 
                 KnotenPunkt = (MP >> 2) // 10
                 KnotenPunktNummer = (MP >> 2) - 10 * KnotenPunkt
+                RequestStatus = MP & 0x3
         
                 deviation = "{}{}:{}min".format(chr(0x2b+2*ZV), (ZW >> 1), (ZW & 1) * 30)
                 # TODO, XXX this is wrong!
                 print("Liniennummer: {}, Kursnummer: {}, Zielnummer: {}, t{}".format(LN, KN, ZN, deviation))
                 print("ZV: {}, ZW: {}, MP: {} / {}, MP: {}, PR: {}, HA: {}, R: {}, ZL: {}".format(ZV, ZW, hex(MP >> 2), MP & 0x3, hex(MP), PR, HA, R, ZL))
-                print("Knotenpunkt: {} / {} / {}".format(get_knotenpunkt(KnotenPunkt), KnotenPunktNummer, anmeldung_typ[MP & 0x3]))
+                print("Knotenpunkt: {} / {} / {}".format(get_knotenpunkt(KnotenPunkt), KnotenPunktNummer, anmeldung_typ[RequestStatus]))
 
                 req_payload = {
                     "time_stamp": int(time.time()),
@@ -168,6 +169,7 @@ def decode(payload):
                     "zv": ZV,
                     "zw": ZW,
                     "mp": MP,
+                    "pr" PR,
                     "ha": HA,
                     "ln": LN,
                     "kn": KN,
@@ -175,14 +177,13 @@ def decode(payload):
                     "r": R,
                     "zl": ZL,
                     "junction": KnotenPunkt,
-                    "junction_number": KnotenPunktNummer
+                    "junction_number": KnotenPunktNummer,
+                    "request_status": RequestStatus
                 }
 
-                print("Making the request")
                 r = requests.post("http://{}/formatted_telegram".format(host), json=req_payload)
-                print("Response:", r);
-
-
+                if r.status_code != 200:
+                    print(f"Request yield {r.status_code}: ",req_payload)
             else:
                 print("Mode: {}, Type: {}, Length: {}".format(mode, r09_type, length))
                 print(payload)
@@ -191,10 +192,11 @@ def decode(payload):
                     "lat": 51.027107,
                     "lon": 13.723566,
                     "station_id": 100,
-                    "raw_data": " ".join(payload)
+                    "raw_data": payload
                 }
                 r = requests.post("http://{}/raw".format(host), json=req_payload)
-                print("Response:", r);
+                if r.status_code != 200:
+                    print(f"Request yield {r.status_code}: ",req_payload)
 
         else:
             p = list(map(hex, payload))
