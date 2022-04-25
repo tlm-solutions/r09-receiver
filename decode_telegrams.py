@@ -5,6 +5,7 @@ import requests
 import socket
 import crcmod
 import sys
+import time
 
 host = "academicstrokes.com"
 
@@ -157,7 +158,7 @@ def decode(payload):
                 print("Knotenpunkt: {} / {} / {}".format(get_knotenpunkt(KnotenPunkt), KnotenPunktNummer, anmeldung_typ[MP & 0x3]))
 
                 req_payload = {
-                    "time_stamp": time.time(),
+                    "time_stamp": int(time.time()),
                     "lat": 51.027107,
                     "lon": 13.723566,
                     "station_id": 100,
