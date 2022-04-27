@@ -11,5 +11,6 @@ stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out/bin
     cp decode_telegrams.py $out/bin
+    cp unittest_data_collector.py $out/bin
   '';
 }
