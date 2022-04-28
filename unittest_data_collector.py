@@ -71,9 +71,6 @@ def decode(payload):
                 print("Knotenpunkt: {} / {} / {}".format(KnotenPunkt, KnotenPunktNummer, RequestStatus))
 
                 req_payload = {
-                    "line": LN,
-                    "course_number": KN,
-                    "destination_number": ZN,
                     "zv": ZV,
                     "zw": ZW,
                     "mp": MP,
@@ -151,7 +148,7 @@ try:
             continue
 
         # sava data and json to file
-        unittest_data.append({"input": data.decode("utf-8"), "output": json_data})
+        unittest_data.append({"input": list(data), "output": json_data})
 except KeyboardInterrupt:
     pass
 
