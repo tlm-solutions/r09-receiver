@@ -3,7 +3,7 @@
 
   inputs = {
     utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.11";
   };
 
   outputs = inputs@{ self, utils, nixpkgs, ... }:
@@ -12,7 +12,6 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         new_packages = {
-          reveng = pkgs.callPackage ./pkgs/reveng.nix { };
           custom-gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
 
           gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
@@ -20,7 +19,8 @@
             gnuradio_input_file = ./recv_rad1o.grc;
           };
 
-          telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
+          # repository dump-dvb:decode-server exposes the same package name
+          # telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
         };
 
       in
@@ -34,12 +34,8 @@
         let
           hydraSystems = [
             "x86_64-linux"
-            "aarch64-linux"
           ];
-          hydraBlacklist = [
-            # not an attrset
-            "custom-gnuradio"
-          ];
+          hydraBlacklist = [];
         in builtins.foldl' (hydraJobs: system:
           builtins.foldl' (hydraJobs: pkgName:
             if builtins.elem pkgName hydraBlacklist

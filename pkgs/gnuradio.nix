@@ -1,7 +1,41 @@
 { pkgs, gnuradio3_8, ... }:
+let
+  gnuradio3_8_unwrapped = gnuradio3_8.unwrapped.override {
+    features = {
+      basic = true;
+      volk = true;
+      doxygen = false;
+      sphinx = false;
+      python-support = true;
+      testing-support = false;
+      gnuradio-runtime = true;
+      gr-ctrlport = true;
+      gnuradio-companion = true;
+      gr-audio = false;
+      gr-uhd = false;
+      gr-modtool = false;
+      gr-video-sdl = false;
+      gr-vocoder = false;
+      examples = false;
+      gr-utils = false;
+      gr-qtgui = false;
+      gr-blocktool = false;
+    };
+    versionAttr = {
+      major = "3.8";
+      minor = "3";
+      patch = "0";
+    };
+  };
+in
 (gnuradio3_8.override {
+  unwrapped = gnuradio3_8_unwrapped;
+
   extraPackages = [
-    (pkgs.callPackage ./reveng.nix { })
-    pkgs.gnuradio3_8Packages.osmosdr
+    (pkgs.callPackage ./reveng.nix { unwrapped = gnuradio3_8_unwrapped; })
+    (pkgs.gnuradio3_8Packages.osmosdr.overrideAttrs (old: rec {
+      buildInputs = with pkgs; [ log4cpp mpir boost17x fftwFloat gmp icu hackrf rtl-sdr gnuradio3_8_unwrapped volk thrift gnuradio3_8_unwrapped.python.pkgs.thrift ];
+      outputs = [ "out" "dev" ];
+    }))
   ];
 })

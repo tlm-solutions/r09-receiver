@@ -3,13 +3,14 @@
 , fetchFromGitHub
 , cmake
 , pkgconfig
-, gnuradio3_8
+, unwrapped
 , makeWrapper
 , log4cpp
 , volk
 , icu
 , swig
 , gmp
+, thrift
 }:
 
 stdenv.mkDerivation {
@@ -26,15 +27,17 @@ stdenv.mkDerivation {
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [
     cmake
-    gnuradio3_8.unwrapped
-    gnuradio3_8.unwrapped.boost
-    gnuradio3_8.unwrapped.python
+    unwrapped
+    unwrapped.boost
+    unwrapped.python
+    unwrapped.python.pkgs.thrift
     makeWrapper
     log4cpp
     swig
     gmp
     volk
     icu
+    thrift
   ];
 
   postInstall = ''
