@@ -34,6 +34,7 @@
         let
           hydraSystems = [
             "x86_64-linux"
+            "aarch64-linux"
           ];
           hydraBlacklist = [];
         in builtins.foldl' (hydraJobs: system:
