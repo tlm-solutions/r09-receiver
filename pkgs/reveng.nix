@@ -3,7 +3,8 @@
 , fetchFromGitHub
 , cmake
 , pkgconfig
-, unwrapped
+, gnuradio3_8
+, unwrapped ? gnuradio3_8.unwrapped
 , makeWrapper
 , log4cpp
 , volk

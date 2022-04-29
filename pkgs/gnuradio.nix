@@ -26,6 +26,7 @@ let
       minor = "3";
       patch = "0";
     };
+    boost = pkgs.boost173;
   };
 in
 (gnuradio3_8.override {
