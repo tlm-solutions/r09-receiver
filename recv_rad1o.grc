@@ -351,7 +351,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: driver=hackrf
+    args: hackrf=0
     bb_gain0: '14'
     bb_gain1: '20'
     bb_gain10: '20'
