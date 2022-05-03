@@ -1,0 +1,20 @@
+
+name: "custom-gnuradio"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v17
+      - uses: cachix/cachix-action@v10
+        with:
+          name: dump-dvb
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build -vL .\#packages.x86_64-linux.custom-gnuradio
+      - run: nix build -vL .\#packages.x86_64-linux.gnuradio-decode
