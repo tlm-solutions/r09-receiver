@@ -352,7 +352,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: hackrf=0
-    bb_gain0: '14'
+    bb_gain0: '42'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -585,7 +585,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '14'
+    if_gain0: '32'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
