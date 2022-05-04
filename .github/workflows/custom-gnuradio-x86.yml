@@ -1,5 +1,5 @@
 
-name: "custom-gnuradio"
+name: "radio-conf-x86_64"
 
 on: [push, pull_request]
 
