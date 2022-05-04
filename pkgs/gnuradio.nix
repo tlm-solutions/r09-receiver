@@ -11,7 +11,13 @@ let
       gnuradio-runtime = true;
       gr-ctrlport = true;
       gnuradio-companion = true;
+      gr-blocks = true;
+      gr-fec = false;
+      gr-fft = true;
+      gr-dtv = false;
+      gr-trellis = false;
       gr-audio = false;
+      gr-zeromq = false;
       gr-uhd = false;
       gr-modtool = false;
       gr-video-sdl = false;
@@ -20,6 +26,7 @@ let
       gr-utils = false;
       gr-qtgui = false;
       gr-blocktool = false;
+      gr-wavelet = false;
     };
     versionAttr = {
       major = "3.8";

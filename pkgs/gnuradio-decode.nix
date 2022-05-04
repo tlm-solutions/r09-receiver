@@ -12,7 +12,7 @@ stdenv.mkDerivation {
   buildPhase = ''
     HOME=$TEMPDIR
     ${gnuradio}/bin/grcc $src
-    PYTHONENV=$(head -1 ${gnuradio}/bin/.gnuradio-companion-wrapped)
+    PYTHONENV=$(head -1 ${gnuradio}/bin/grcc)
     sed -i "1s,.*,$PYTHONENV," recv_and_demod.py
   '';
 
