@@ -1,0 +1,24 @@
+name: "custom-aarch64-gnuradio"
+
+on:
+  push:
+    branches:
+      - live-testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v17
+      -run: |
+        DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update -q -y && sudo apt-get install -q -y qemu-system-aarch64 qemu-efi binfmt support qemu-user-static
+        mkdir -p ~/.config/nix
+        sudo back -c "echo system-features = aarch64-linux arm-linux >> /etc/nix/nix.conf"
+      - uses: cachix/cachix-action@v10
+        with:
+          name: dump-dvb
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build -vL .\#packages.aarch64.custom-gnuradio
+      - run: nix build -vL .\#packages.aarch64.gnuradio-decode
