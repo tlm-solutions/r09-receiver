@@ -8,7 +8,7 @@ let
       sphinx = false;
       python-support = true;
       testing-support = false;
-      gnuradio-runtime = false;
+      gnuradio-runtime = true;
       gr-ctrlport = true;
       gnuradio-companion = true;
       gr-blocks = true;
