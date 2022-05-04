@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v17
-      -run: |
+      - run: |
         DEBIAN_FRONTEND=noninteractive
         sudo apt-get update -q -y && sudo apt-get install -q -y qemu-system-aarch64 qemu-efi binfmt support qemu-user-static
         mkdir -p ~/.config/nix
