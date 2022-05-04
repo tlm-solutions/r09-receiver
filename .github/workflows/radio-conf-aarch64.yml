@@ -1,9 +1,6 @@
-name: "custom-aarch64-gnuradio"
+name: "radio-conf-aarch64"
 
-on:
-  push:
-    branches:
-      - live-testing
+on: [push, pull_request]
 
 jobs:
   build:
