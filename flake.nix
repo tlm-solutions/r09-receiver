@@ -20,7 +20,7 @@
 
           gnuradio-decode = pkgs.callPackage ./pkgs/gnuradio-decode.nix {
             gnuradio = pkgs.callPackage ./pkgs/gnuradio.nix { };
-            gnuradio_input_file = ./recv_rad1o.grc;
+            gnuradio_input_file = ./recv_osmosdr.grc;
           };
 
           # repository dump-dvb:decode-server exposes the same package name
