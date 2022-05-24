@@ -27,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [8, 12.0]
     rotation: 0
     state: enabled
 
@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 76.0]
+    coordinate: [328, 84.0]
     rotation: 0
     state: true
 - name: decimation
@@ -53,7 +53,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 12.0]
+    coordinate: [296, 20.0]
     rotation: 0
     state: true
 - name: freq
@@ -65,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 76.0]
+    coordinate: [408, 84.0]
     rotation: 0
     state: true
 - name: fsk_deviation_hz
@@ -77,7 +77,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 76.0]
+    coordinate: [208, 84.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -89,7 +89,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 12.0]
+    coordinate: [208, 20.0]
     rotation: 0
     state: enabled
 - name: transition_bw
@@ -101,9 +101,29 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 12.0]
+    coordinate: [392, 20.0]
     rotation: 0
     state: true
+- name: analog_agc_xx_0
+  id: analog_agc_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gain: '1.0'
+    max_gain: '65536'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rate: '0.1'
+    reference: '1.0'
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [848, 364.0]
+    rotation: 0
+    state: enabled
 - name: analog_quadrature_demod_cf_0
   id: analog_quadrature_demod_cf
   parameters:
@@ -117,7 +137,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 188.0]
+    coordinate: [624, 220.0]
     rotation: 0
     state: true
 - name: analog_quadrature_demod_cf_0_0
@@ -126,14 +146,14 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    gain: '4'
+    gain: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1080, 188.0]
+    coordinate: [1152, 220.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -151,9 +171,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 372.0]
+    coordinate: [1280, 388.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_socket_pdu_0
   id: blocks_socket_pdu
   parameters:
@@ -171,7 +191,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 548.0]
+    coordinate: [904, 516.0]
     rotation: 0
     state: true
 - name: blocks_tagged_stream_to_pdu_1
@@ -188,7 +208,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 572.0]
+    coordinate: [656, 540.0]
     rotation: 0
     state: true
 - name: digital_binary_slicer_fb_0
@@ -203,7 +223,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 376.0]
+    coordinate: [1424, 392.0]
     rotation: 0
     state: true
 - name: digital_clock_recovery_mm_xx_0
@@ -217,14 +237,14 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mu: '0.5'
-    omega: samp_rate/decimation/2400.
-    omega_relative_limit: '0.005'
+    omega: samp_rate/decimation/2400.*24/25.
+    omega_relative_limit: '0.01'
     type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [848, 340.0]
+    coordinate: [1032, 356.0]
     rotation: 0
     state: enabled
 - name: freq_xlating_fir_filter_xxx_0_0
@@ -245,7 +265,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 164.0]
+    coordinate: [400, 196.0]
     rotation: 0
     state: enabled
 - name: high_pass_filter_0
@@ -255,7 +275,7 @@ blocks:
     alias: ''
     beta: '6.76'
     comment: ''
-    cutoff_freq: '100'
+    cutoff_freq: '50'
     decim: '1'
     gain: '1'
     interp: '1'
@@ -263,13 +283,13 @@ blocks:
     minoutbuf: '0'
     samp_rate: samp_rate/decimation
     type: fir_filter_fff
-    width: '50'
+    width: '25'
     win: firdes.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [760, 140.0]
+    coordinate: [808, 172.0]
     rotation: 0
     state: enabled
 - name: high_pass_filter_0_0
@@ -287,13 +307,13 @@ blocks:
     minoutbuf: '0'
     samp_rate: samp_rate/decimation
     type: fir_filter_fff
-    width: '0.5'
+    width: '1'
     win: firdes.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 324.0]
+    coordinate: [632, 340.0]
     rotation: 0
     state: enabled
 - name: hilbert_fc_0
@@ -311,7 +331,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 188.0]
+    coordinate: [1000, 220.0]
     rotation: 0
     state: true
 - name: osmosdr_source_0
@@ -668,9 +688,29 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [24, 156.0]
+    coordinate: [64, 196.0]
     rotation: 0
     state: enabled
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '25'
+    fbw: '0.4'
+    interp: '24'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: ''
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1336, 196.0]
+    rotation: 0
+    state: true
 - name: reveng_correlate_access_code_xx_ts_fl_1
   id: reveng_correlate_access_code_xx_ts_fl
   parameters:
@@ -678,7 +718,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    len: '20'
+    len: '24'
     maxoutbuf: '0'
     minoutbuf: '0'
     tagname: packet_len
@@ -687,7 +727,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 548.0]
+    coordinate: [400, 516.0]
     rotation: 0
     state: true
 - name: root_raised_cosine_filter_0
@@ -704,19 +744,20 @@ blocks:
     minoutbuf: '0'
     ntaps: '4'
     samp_rate: samp_rate/decimation
-    sym_rate: samp_rate/decimation/2400
+    sym_rate: samp_rate/decimation/2400.*24/25.
     type: fir_filter_fff
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 332.0]
+    coordinate: [400, 348.0]
     rotation: 0
     state: enabled
 
 connections:
+- [analog_agc_xx_0, '0', digital_clock_recovery_mm_xx_0, '0']
 - [analog_quadrature_demod_cf_0, '0', high_pass_filter_0, '0']
-- [analog_quadrature_demod_cf_0_0, '0', high_pass_filter_0_0, '0']
+- [analog_quadrature_demod_cf_0_0, '0', rational_resampler_xxx_0, '0']
 - [blocks_multiply_const_vxx_0, '0', digital_binary_slicer_fb_0, '0']
 - [blocks_socket_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [blocks_tagged_stream_to_pdu_1, pdus, blocks_socket_pdu_0, pdus]
@@ -724,11 +765,12 @@ connections:
 - [digital_clock_recovery_mm_xx_0, '0', blocks_multiply_const_vxx_0, '0']
 - [freq_xlating_fir_filter_xxx_0_0, '0', analog_quadrature_demod_cf_0, '0']
 - [high_pass_filter_0, '0', hilbert_fc_0, '0']
-- [high_pass_filter_0_0, '0', root_raised_cosine_filter_0, '0']
+- [high_pass_filter_0_0, '0', analog_agc_xx_0, '0']
 - [hilbert_fc_0, '0', analog_quadrature_demod_cf_0_0, '0']
 - [osmosdr_source_0, '0', freq_xlating_fir_filter_xxx_0_0, '0']
+- [rational_resampler_xxx_0, '0', root_raised_cosine_filter_0, '0']
 - [reveng_correlate_access_code_xx_ts_fl_1, '0', blocks_tagged_stream_to_pdu_1, '0']
-- [root_raised_cosine_filter_0, '0', digital_clock_recovery_mm_xx_0, '0']
+- [root_raised_cosine_filter_0, '0', high_pass_filter_0_0, '0']
 
 metadata:
   file_format: 1
