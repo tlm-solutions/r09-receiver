@@ -42,7 +42,7 @@ in
   extraPackages = [
     (pkgs.callPackage ./reveng.nix { unwrapped = gnuradio3_8_unwrapped; })
     (pkgs.gnuradio3_8Packages.osmosdr.overrideAttrs (old: rec {
-      buildInputs = with pkgs; [ log4cpp mpir boost17x fftwFloat gmp icu hackrf rtl-sdr gnuradio3_8_unwrapped volk thrift gnuradio3_8_unwrapped.python.pkgs.thrift ];
+      buildInputs = with pkgs; [ log4cpp mpir gnuradio3_8_unwrapped.boost fftwFloat gmp icu hackrf rtl-sdr gnuradio3_8_unwrapped gnuradio3_8_unwrapped.volk thrift gnuradio3_8_unwrapped.python.pkgs.thrift ];
       outputs = [ "out" "dev" ];
     }))
   ];
