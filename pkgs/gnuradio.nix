@@ -10,7 +10,8 @@ let
       testing-support = false;
       gnuradio-runtime = true;
       gr-ctrlport = true;
-      gnuradio-companion = true;
+      # disable gnuradio-companion here as we only want grcc and not all the X library rubish
+      gnuradio-companion = false;
       gr-blocks = true;
       gr-fec = false;
       gr-fft = true;
@@ -33,10 +34,10 @@ let
       minor = "3";
       patch = "0";
     };
-    boost = pkgs.boost173;
+    #boost = pkgs.boost173;
   };
 in
-(gnuradio3_8.override {
+(gnuradio3_8.overrideDerivation(old: {
   unwrapped = gnuradio3_8_unwrapped;
 
   extraPackages = [
@@ -46,4 +47,7 @@ in
       outputs = [ "out" "dev" ];
     }))
   ];
-})
+
+  # enable GRC cmake flag for grcc
+  cmakeFlags = gnuradio3_8_unwrapped.cmakeFlags ++ [ "-DENABLE_GRC=ON" ];
+}))

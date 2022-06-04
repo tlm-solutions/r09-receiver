@@ -12,6 +12,7 @@
 , swig
 , gmp
 , thrift
+, mpir
 }:
 
 stdenv.mkDerivation {
@@ -39,6 +40,7 @@ stdenv.mkDerivation {
     volk
     icu
     thrift
+    mpir
   ];
 
   postInstall = ''
