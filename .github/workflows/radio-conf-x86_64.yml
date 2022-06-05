@@ -13,5 +13,4 @@ jobs:
         with:
           name: dump-dvb
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build -vL .\#packages.x86_64-linux.custom-gnuradio
-      - run: nix build -vL .\#packages.x86_64-linux.gnuradio-decode
+      - run: nix build -vL .\#packages.x86_64-linux.gnuradio-decoder
