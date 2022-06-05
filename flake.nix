@@ -19,16 +19,10 @@
           gnuradio-decoder =
           let
             gnuradio_unwrapped = pkgs.callPackage ./pkgs/gnuradio.nix { gnuradio = pkgs.gnuradio3_8; };
-            gnuradio = pkgs.gnuradio3_8.overrideDerivation(old: {
-              unwrapped = gnuradio_unwrapped;
-              extraPackages = [];
-              extraPythonPackages = [];
-            });
           in
           pkgs.callPackage ./pkgs/gnuradio-decoder-cpp.nix {
-            gnuradio = gnuradio;
             gnuradio_unwrapped = gnuradio_unwrapped;
-            osmosdr = pkgs.callPackage ./pkgs/osmosdr.nix { gnuradio = gnuradio; gnuradio_unwrapped = gnuradio_unwrapped; gnuradioPackages = pkgs.gnuradio3_8Packages; };
+            gnuradioPackages = pkgs.gnuradio3_8Packages;
           };
 
           # repository dump-dvb:decode-server exposes the same package name

@@ -1,13 +1,16 @@
 { stdenv
 , pkg-config
 , cmake
-, gnuradio
 , gnuradio_unwrapped
-, osmosdr
+, gnuradioPackages
 , log4cpp
 , mpir
+, gmp
 , gmpxx
 , thrift
+, hackrf
+, rtl-sdr
+, fftwFloat
 , patchelf
 , frequency ? "170795000"
 , offset ? "19500"
@@ -41,6 +44,14 @@ let
     '';
   };
 
+  osmosdr = gnuradioPackages.osmosdr.overrideDerivation(old: {
+    gnuradio = gnuradio_unwrapped;
+    buildInputs = [ log4cpp mpir gnuradio_unwrapped.boost.dev gmp hackrf rtl-sdr gnuradio_unwrapped.volk fftwFloat.dev gmpxx.dev gnuradio_unwrapped ];
+    nativeBuildInputs = [ cmake pkg-config ];
+    cmakeFlags = [ "-DENABLE_PYTHON=OFF" ];
+    outputs = [ "out" ];
+  });
+
   osmosdr-dependency = stdenv.mkDerivation {
     name = "osmosdr-dependency";
     version = "0.1.0";
@@ -72,8 +83,8 @@ let
 
     src = ./..;
 
-    nativeBuildInputs = [ cmake pkg-config thrift gnuradio.python.pkgs.thrift gnuradio osmosdr ];
-    buildInputs = [ log4cpp mpir gnuradio.boost.dev gmpxx.dev gnuradio.volk ];
+    nativeBuildInputs = [ cmake pkg-config gnuradio_unwrapped osmosdr ];
+    buildInputs = [ log4cpp mpir gnuradio_unwrapped.boost.dev gmpxx.dev gnuradio_unwrapped.volk ];
 
     cmakeFlags = [ "-DOSMOSDR_DIR=${osmosdr}" ];
   };
