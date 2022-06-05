@@ -141,5 +141,7 @@ int main(int argc, char **argv) {
 
   tb->start();
 
+	tb->wait();
+
   return EXIT_SUCCESS;
 }
