@@ -1,16 +1,14 @@
-{ pkgs, gnuradio3_8, ... }:
-let
-  gnuradio3_8_unwrapped = gnuradio3_8.unwrapped.override {
+{ pkgs, gnuradio, ... }:
+gnuradio.unwrapped.override {
     features = {
       basic = true;
       volk = true;
       doxygen = false;
       sphinx = false;
-      python-support = true;
+      python-support = false;
       testing-support = false;
       gnuradio-runtime = true;
       gr-ctrlport = true;
-      # disable gnuradio-companion here as we only want grcc and not all the X library rubish
       gnuradio-companion = false;
       gr-blocks = true;
       gr-fec = false;
@@ -34,20 +32,4 @@ let
       minor = "3";
       patch = "0";
     };
-    #boost = pkgs.boost173;
-  };
-in
-(gnuradio3_8.overrideDerivation(old: {
-  unwrapped = gnuradio3_8_unwrapped;
-
-  extraPackages = [
-    (pkgs.callPackage ./reveng.nix { unwrapped = gnuradio3_8_unwrapped; })
-    (pkgs.gnuradio3_8Packages.osmosdr.overrideAttrs (old: rec {
-      buildInputs = with pkgs; [ log4cpp mpir gnuradio3_8_unwrapped.boost fftwFloat gmp icu hackrf rtl-sdr gnuradio3_8_unwrapped gnuradio3_8_unwrapped.volk thrift gnuradio3_8_unwrapped.python.pkgs.thrift ];
-      outputs = [ "out" "dev" ];
-    }))
-  ];
-
-  # enable GRC cmake flag for grcc
-  cmakeFlags = gnuradio3_8_unwrapped.cmakeFlags ++ [ "-DENABLE_GRC=ON" ];
-}))
+  }
