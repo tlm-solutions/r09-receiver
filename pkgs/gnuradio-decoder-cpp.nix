@@ -2,6 +2,7 @@
 , pkg-config
 , cmake
 , gnuradio
+, gnuradio_unwrapped
 , osmosdr
 , log4cpp
 , mpir
@@ -17,7 +18,7 @@ let
     name = "decoder-dependencies";
     version = "0.1.0";
 
-    src = gnuradio.unwrapped;
+    src = gnuradio_unwrapped;
       
     phases = [ "installPhase" ];
 
