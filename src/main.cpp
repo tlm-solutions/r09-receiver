@@ -49,7 +49,6 @@ int main(int argc, char **argv) {
   float bandwidth_sdr = 1000000;
   float bandwidth_xlat = 10000;
   int decimation = static_cast<int>(bandwidth_sdr / bandwidth_xlat);
-  float transition_bw = 1000;
   float baud = 2400;
   float sps = samp_rate / decimation / baud;
 
@@ -70,13 +69,13 @@ int main(int argc, char **argv) {
 
   std::vector<gr_complex> xlat_taps = gr::filter::firdes::complex_band_pass(
       1, samp_rate, -samp_rate / (2 * decimation), samp_rate / (2 * decimation),
-      transition_bw);
+      bandwidth_xlat);
   gr_vector_float fir1_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 50, 25);
-  gr_vector_float fir2_taps = gr::filter::firdes::root_raised_cosine(
-      1.0, samp_rate / decimation, sps, 0.35, 4);
-  gr_vector_float fir3_taps =
+  gr_vector_float fir2_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 1.0, 1.0);
+  gr_vector_float fir3_taps = gr::filter::firdes::root_raised_cosine(
+      1.0, samp_rate / decimation, sps, 0.35, 4);
 
   tb = gr::make_top_block("fg");
 
@@ -97,7 +96,7 @@ int main(int argc, char **argv) {
   demod1 = gr::analog::quadrature_demod_cf::make(1.0);
   fir1 = gr::filter::fir_filter_fff::make(1, fir1_taps);
   hilbert = gr::filter::hilbert_fc::make(65);
-  demod2 = gr::analog::quadrature_demod_cf::make(1.0);
+  demod2 = gr::analog::quadrature_demod_cf::make(4.0);
   fir2 = gr::filter::fir_filter_fff::make(1, fir2_taps);
   fir3 = gr::filter::fir_filter_fff::make(1, fir3_taps);
   clockRecovery = gr::digital::clock_recovery_mm_ff::make(
