@@ -7,34 +7,95 @@
 , mpir
 , gmpxx
 , thrift
+, patchelf
 , frequency ? "170795000"
 , offset ? "19500"
-, device ? "hackrf=0" }:
+, device ? "hackrf=0"
+}:
+let
+  decoder-dependencies = stdenv.mkDerivation {
+    name = "decoder-dependencies";
+    version = "0.1.0";
+
+    src = gnuradio.unwrapped;
+      
+    phases = [ "installPhase" ];
+
+    installPhase = ''
+      mkdir -p $out/lib
+
+      for module in analog digital blocks filter fft pmt runtime
+      do
+        cp $src/lib/libgnuradio-$module.so.3.8.5 $out/lib/libgnuradio-$module.so.3.8.5
+        chmod +w $out/lib/libgnuradio-$module.so.3.8.5
+      done
+
+      for module in analog digital blocks filter fft pmt runtime
+      do
+        RPATH=$(${patchelf}/bin/patchelf --print-rpath $out/lib/libgnuradio-$module.so.3.8.5)
+
+        ${patchelf}/bin/patchelf --set-rpath $out/lib:$RPATH $out/lib/libgnuradio-$module.so.3.8.5
+        ${patchelf}/bin/patchelf --shrink-rpath $out/lib/libgnuradio-$module.so.3.8.5
+      done
+    '';
+  };
+
+  osmosdr-dependency = stdenv.mkDerivation {
+    name = "osmosdr-dependency";
+    version = "0.1.0";
+
+    src = osmosdr;
+
+    phases = [ "installPhase" ];
+    
+    installPhase = ''
+      mkdir -p $out/lib
+
+      echo "test"
+
+      cp $src/lib/libgnuradio-osmosdr.so.0.2.0.0 $out/lib/libgnuradio-osmosdr.so.0.2.0.0
+      cp $src/lib/libgnuradio-osmosdr.so.0.2.0 $out/lib/libgnuradio-osmosdr.so.0.2.0
+
+      chmod +w $out/lib/libgnuradio-osmosdr.so.0.2.0
+
+      RPATH=$(${patchelf}/bin/patchelf --print-rpath $out/lib/libgnuradio-osmosdr.so.0.2.0)
+
+      ${patchelf}/bin/patchelf --set-rpath ${decoder-dependencies}/lib:$RPATH $out/lib/libgnuradio-osmosdr.so.0.2.0
+      ${patchelf}/bin/patchelf --shrink-rpath $out/lib/libgnuradio-osmosdr.so.0.2.0
+    '';
+  };
+
+  decoder = stdenv.mkDerivation {
+    name = "decoder";
+    version = "0.1.0";
+
+    src = ./..;
+
+    nativeBuildInputs = [ cmake pkg-config thrift gnuradio.python.pkgs.thrift ];
+    buildInputs = [ log4cpp mpir gnuradio.boost.dev gmpxx.dev gnuradio.volk gnuradio osmosdr ];
+
+    cmakeFlags = [ "-DOSMOSDR_DIR=${osmosdr}" ];
+  };
+in
 stdenv.mkDerivation {
-  name = "gnuradio-decoder-cpp";
+  name = "decoder-shrinked";
   version = "0.1.0";
 
-  src = ./..;
+  src = decoder;
 
-  nativeBuildInputs = [ cmake pkg-config thrift gnuradio.python.pkgs.thrift ];
-  buildInputs = [ log4cpp mpir gnuradio.boost.dev gnuradio gmpxx.dev osmosdr gnuradio.volk ];
+  phases = [ "installPhase" ];
 
-  cmakeFlags = [ "-DOSMOSDR_DIR=${osmosdr}" ];
+  installPhase = ''
+    mkdir -p $out/bin
 
-  # buildPhase = ''
-  #   gcc -o gnuradio-decode-c
-  #   HOME=$TEMPDIR
-  #   cp $src flowgraph.grc
-  #   sed -i 's/{{FREQUENCY}}/${frequency}/' flowgraph.grc
-  #   sed -i 's/{{OFFSET}}/${offset}/' flowgraph.grc
-  #   sed -i 's/{{DEVICE}}/${device}/' flowgraph.grc
-  #   ${gnuradio}/bin/grcc flowgraph.grc
-  #   PYTHONENV=$(head -1 ${gnuradio}/bin/.grcc-wrapped)
-  #   sed -i "1s,.*,$PYTHONENV," recv_and_demod.py
-  # '';
+    cp $src/bin/gnuradio-decoder-cpp gnuradio-decoder-cpp
+    chmod +w gnuradio-decoder-cpp
 
-  # installPhase = ''
-  #   mkdir -p $out/bin
-  #   cp ./recv_and_demod.py $out/bin
-  # '';
+    RPATH=$(${patchelf}/bin/patchelf --print-rpath gnuradio-decoder-cpp)
+
+    ${patchelf}/bin/patchelf --set-rpath ${decoder-dependencies}/lib:${osmosdr-dependency}/lib:$RPATH gnuradio-decoder-cpp
+    ${patchelf}/bin/patchelf --shrink-rpath gnuradio-decoder-cpp
+
+    cp gnuradio-decoder-cpp $out/bin/gnuradio-decoder-cpp
+  '';
 }
