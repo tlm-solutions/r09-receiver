@@ -73,10 +73,10 @@ int main(int argc, char **argv) {
       transition_bw);
   gr_vector_float fir1_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 50, 25);
-  gr_vector_float fir2_taps =
-      gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 1.0, 1.0);
-  gr_vector_float fir3_taps = gr::filter::firdes::root_raised_cosine(
+  gr_vector_float fir2_taps = gr::filter::firdes::root_raised_cosine(
       1.0, samp_rate / decimation, sps, 0.35, 4);
+  gr_vector_float fir3_taps =
+      gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 1.0, 1.0);
 
   tb = gr::make_top_block("fg");
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
   src->set_gain_mode(false, 0);
   src->set_gain(14, "RF", 0);
   src->set_gain(32, "IF", 0);
-  src->set_gain(50, "BB", 0);
+  src->set_gain(42, "BB", 0);
   src->set_bandwidth(bandwidth_sdr, 0);
 
   xlat = gr::filter::freq_xlating_fir_filter_ccc::make(
@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
   demod1 = gr::analog::quadrature_demod_cf::make(1.0);
   fir1 = gr::filter::fir_filter_fff::make(1, fir1_taps);
   hilbert = gr::filter::hilbert_fc::make(65);
-  demod2 = gr::analog::quadrature_demod_cf::make(4.0);
+  demod2 = gr::analog::quadrature_demod_cf::make(1.0);
   fir2 = gr::filter::fir_filter_fff::make(1, fir2_taps);
   fir3 = gr::filter::fir_filter_fff::make(1, fir3_taps);
   clockRecovery = gr::digital::clock_recovery_mm_ff::make(
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 
   std::cout << "GNU Radio Version: " << ver << "\n\n C Compiler: " << cCompiler
             << "\n\n CXX Compiler: " << cxxCompiler << "\n\n Prefs: " << prefs
-            << "\n\n Compiler Flags: " << compilerFlags;
+            << "\n\n Compiler Flags: " << compilerFlags << "\n\n";
 
   try {
     tb->connect(src, 0, xlat, 0);
