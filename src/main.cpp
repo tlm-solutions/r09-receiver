@@ -47,7 +47,8 @@ int main(int argc, char **argv) {
   float xlat_center_freq = 19500;
   float samp_rate = 2000000;
   float bandwidth_sdr = 1000000;
-  float bandwidth_xlat = 10000;
+  float bandwidth_xlat = 5000;
+	float transition_bw = 1000;
   int decimation = static_cast<int>(bandwidth_sdr / bandwidth_xlat);
   float baud = 2400;
   float sps = samp_rate / decimation / baud;
@@ -69,9 +70,9 @@ int main(int argc, char **argv) {
 
   std::vector<gr_complex> xlat_taps = gr::filter::firdes::complex_band_pass(
       1, samp_rate, -samp_rate / (2 * decimation), samp_rate / (2 * decimation),
-      bandwidth_xlat);
+      transition_bw);
   gr_vector_float fir1_taps =
-      gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 50, 25);
+      gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 100, 50);
   gr_vector_float fir2_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 1.0, 1.0);
   gr_vector_float fir3_taps = gr::filter::firdes::root_raised_cosine(
