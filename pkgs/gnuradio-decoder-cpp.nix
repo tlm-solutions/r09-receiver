@@ -71,8 +71,8 @@ let
 
     src = ./..;
 
-    nativeBuildInputs = [ cmake pkg-config thrift gnuradio.python.pkgs.thrift ];
-    buildInputs = [ log4cpp mpir gnuradio.boost.dev gmpxx.dev gnuradio.volk gnuradio osmosdr ];
+    nativeBuildInputs = [ cmake pkg-config thrift gnuradio.python.pkgs.thrift gnuradio osmosdr ];
+    buildInputs = [ log4cpp mpir gnuradio.boost.dev gmpxx.dev gnuradio.volk ];
 
     cmakeFlags = [ "-DOSMOSDR_DIR=${osmosdr}" ];
   };
