@@ -22,7 +22,7 @@ let
     version = "0.1.0";
 
     src = gnuradio_unwrapped;
-      
+
     phases = [ "installPhase" ];
 
     installPhase = ''
@@ -44,7 +44,7 @@ let
     '';
   };
 
-  osmosdr = gnuradioPackages.osmosdr.overrideDerivation(old: {
+  osmosdr = gnuradioPackages.osmosdr.overrideDerivation (old: {
     gnuradio = gnuradio_unwrapped;
     buildInputs = [ log4cpp mpir gnuradio_unwrapped.boost.dev gmp hackrf rtl-sdr gnuradio_unwrapped.volk fftwFloat.dev gmpxx.dev gnuradio_unwrapped ];
     nativeBuildInputs = [ cmake pkg-config ];
@@ -59,7 +59,7 @@ let
     src = osmosdr;
 
     phases = [ "installPhase" ];
-    
+
     installPhase = ''
       mkdir -p $out/lib
 
