@@ -25,7 +25,7 @@
 #include <osmosdr/source.h>
 
 void usage(char *argv0) {
-	std::cout << "Usage: " << argv0 << " {frequency} {offset} [device]" << std::endl;
+	std::cout << "Usage: " << argv0 << " {frequency} {offset} {rf} {if} {bb} [device]" << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -52,20 +52,24 @@ int main(int argc, char **argv) {
   int decimation = static_cast<int>(bandwidth_sdr / bandwidth_xlat);
   float baud = 2400;
   float sps = samp_rate / decimation / baud;
+	int RF, IF, BB;
 
 	std::string device_string = "";
 
 	// Argument parsing
-	if (argc != 3 && argc != 4) {
+	if (argc != 6 && argc != 7) {
 		usage(*argv);
 		return EXIT_FAILURE;
 	}
 
 	freq = strtof(argv[1], NULL);
 	xlat_center_freq = strtof(argv[2], NULL);
+	RF = atoi(argv[3]);
+	IF = atoi(argv[4]);
+	BB = atoi(argv[5]);
 
-	if (argc == 4) {
-		device_string = std::string(argv[3]);	
+	if (argc == 7) {
+		device_string = std::string(argv[6]);	
 	}
 
   std::vector<gr_complex> xlat_taps = gr::filter::firdes::complex_band_pass(
@@ -87,9 +91,9 @@ int main(int argc, char **argv) {
   src->set_sample_rate(samp_rate);
   src->set_center_freq(freq);
   src->set_gain_mode(false, 0);
-  src->set_gain(14, "RF", 0);
-  src->set_gain(32, "IF", 0);
-  src->set_gain(42, "BB", 0);
+  src->set_gain(RF, "RF", 0);
+  src->set_gain(IF, "IF", 0);
+  src->set_gain(BB, "BB", 0);
   src->set_bandwidth(bandwidth_sdr, 0);
 
   xlat = gr::filter::freq_xlating_fir_filter_ccc::make(
