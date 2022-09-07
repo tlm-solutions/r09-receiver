@@ -4,6 +4,7 @@
 #include <string>
 
 #include "correlate_access_code_bb_ts_fl.h"
+#include "rational_resampler.h"
 #include <gnuradio/analog/pwr_squelch_cc.h>
 #include <gnuradio/analog/quadrature_demod_cf.h>
 #include <gnuradio/blocks/multiply_const.h>
@@ -17,7 +18,6 @@
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/filter/freq_xlating_fir_filter.h>
 #include <gnuradio/filter/hilbert_fc.h>
-#include <gnuradio/filter/pfb_arb_resampler_ccf.h>
 #include <gnuradio/logger.h>
 #include <gnuradio/prefs.h>
 #include <gnuradio/sys_paths.h>
@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
 
   // Declare our GNU Radio blocks
   gr::filter::freq_xlating_fir_filter_ccc::sptr xlat;
+  gr::filter::rational_resampler_ccc::sptr resampler;
   gr::analog::quadrature_demod_cf::sptr demod1, demod2;
   gr::filter::fir_filter_fff::sptr fir1, fir2, fir3;
   gr::filter::hilbert_fc::sptr hilbert;
@@ -51,7 +52,9 @@ int main(int argc, char **argv) {
 	float transition_bw = 1000;
   int decimation = static_cast<int>(bandwidth_sdr / bandwidth_xlat);
   float baud = 2400;
-  float sps = samp_rate / decimation / baud;
+  unsigned rs_interpolation = 24;
+  unsigned rs_decimation = 25;
+  float sps = samp_rate / decimation / baud * (float) rs_interpolation / (float) rs_decimation;
 	int RF, IF, BB;
 
 	std::string device_string = "";
@@ -98,6 +101,8 @@ int main(int argc, char **argv) {
 
   xlat = gr::filter::freq_xlating_fir_filter_ccc::make(
       decimation, xlat_taps, xlat_center_freq, samp_rate);
+  resampler = gr::filter::rational_resampler_ccc::make(
+    rs_interpolation, rs_decimation, std::vector<gr_complex>(), 0.4);
   demod1 = gr::analog::quadrature_demod_cf::make(1.0);
   fir1 = gr::filter::fir_filter_fff::make(1, fir1_taps);
   hilbert = gr::filter::hilbert_fc::make(65);
@@ -128,7 +133,8 @@ int main(int argc, char **argv) {
 
   try {
     tb->connect(src, 0, xlat, 0);
-    tb->connect(xlat, 0, demod1, 0);
+    tb->connect(xlat, 0, resampler, 0);
+    tb->connect(resampler, 0, demod1, 0);
     tb->connect(demod1, 0, fir1, 0);
     tb->connect(fir1, 0, hilbert, 0);
     tb->connect(hilbert, 0, demod2, 0);
