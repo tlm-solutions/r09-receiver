@@ -16,24 +16,21 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
 
-          new_packages = {
-            gnuradio-decoder =
-              let
-                gnuradio_unwrapped = pkgs.callPackage ./pkgs/gnuradio.nix { gnuradio = pkgs.gnuradio3_8; };
-              in
-              pkgs.callPackage ./pkgs/gnuradio-decoder-cpp.nix {
-                gnuradio_unwrapped = gnuradio_unwrapped;
-                gnuradioPackages = pkgs.gnuradio3_8Packages;
-              };
-
-            # repository dump-dvb:decode-server exposes the same package name
-            # telegram-decode = pkgs.callPackage ./pkgs/telegram-decode.nix { };
-          };
-
+          gnuradio-decoder =
+            let
+              gnuradio_unwrapped = pkgs.callPackage ./pkgs/gnuradio.nix { gnuradio = pkgs.gnuradio3_8; };
+            in
+            pkgs.callPackage ./pkgs/gnuradio-decoder-cpp.nix {
+              gnuradio_unwrapped = gnuradio_unwrapped;
+              gnuradioPackages = pkgs.gnuradio3_8Packages;
+            };
         in
         rec {
           checks = packages;
-          packages = new_packages;
+          packages = {
+            gnuradio-decoder = gnuradio-decoder;
+            default = gnuradio-decoder;
+          };
         }
       ) // {
       overlays.default = final: prev: {
