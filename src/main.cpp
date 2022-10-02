@@ -7,6 +7,7 @@
 #include "rational_resampler.h"
 #include <gnuradio/analog/pwr_squelch_cc.h>
 #include <gnuradio/analog/quadrature_demod_cf.h>
+#include <gnuradio/blocks/add_const_ff.h>
 #include <gnuradio/blocks/multiply_const.h>
 #include <gnuradio/blocks/socket_pdu.h>
 #include <gnuradio/blocks/tagged_stream_to_pdu.h>
@@ -35,8 +36,9 @@ int main(int argc, char **argv) {
   gr::filter::freq_xlating_fir_filter_ccc::sptr xlat;
   gr::filter::rational_resampler_ccc::sptr resampler;
   gr::analog::quadrature_demod_cf::sptr demod1, demod2;
-  gr::filter::fir_filter_fff::sptr fir1, fir2, fir3;
+  gr::filter::fir_filter_fff::sptr fir1, fir4;
   gr::filter::hilbert_fc::sptr hilbert;
+  gr::blocks::add_const_ff::sptr addConst;
   gr::digital::clock_recovery_mm_ff::sptr clockRecovery;
   gr::blocks::multiply_const_ff::sptr multiplyConst;
   gr::digital::binary_slicer_fb::sptr slicer;
@@ -80,10 +82,8 @@ int main(int argc, char **argv) {
       transition_bw);
   gr_vector_float fir1_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 100, 50);
-  gr_vector_float fir2_taps =
-      gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 1.0, 1.0);
-  gr_vector_float fir3_taps = gr::filter::firdes::root_raised_cosine(
-      1.0, samp_rate / decimation, sps, 0.35, 4);
+	
+  gr_vector_float fir4_taps = std::vector<float>({0.002334677756186128, 0.01938096025639799, 0.14012609258404307, 0.25997995536747043, 0.24015818184610402, 0.25997995536747043, 0.14012609258404307, 0.01938096025639799, 0.002334677756186128});
 
   tb = gr::make_top_block("fg");
 
@@ -107,8 +107,8 @@ int main(int argc, char **argv) {
   fir1 = gr::filter::fir_filter_fff::make(1, fir1_taps);
   hilbert = gr::filter::hilbert_fc::make(65);
   demod2 = gr::analog::quadrature_demod_cf::make(4.0);
-  fir2 = gr::filter::fir_filter_fff::make(1, fir2_taps);
-  fir3 = gr::filter::fir_filter_fff::make(1, fir3_taps);
+  addConst = gr::blocks::add_const_ff::make(-1.5*M_PI);
+  fir4 = gr::filter::fir_filter_fff::make(1, fir4_taps);
   clockRecovery = gr::digital::clock_recovery_mm_ff::make(
       sps, 0.25f * 0.175f * 0.175f, 0.5, 0.175, 0.01);
   multiplyConst = gr::blocks::multiply_const_ff::make(-1.0f);
@@ -138,9 +138,9 @@ int main(int argc, char **argv) {
     tb->connect(demod1, 0, fir1, 0);
     tb->connect(fir1, 0, hilbert, 0);
     tb->connect(hilbert, 0, demod2, 0);
-    tb->connect(demod2, 0, fir2, 0);
-    tb->connect(fir2, 0, fir3, 0);
-    tb->connect(fir3, 0, clockRecovery, 0);
+    tb->connect(demod2, 0, addConst, 0);
+    tb->connect(addConst, 0, fir4, 0);
+    tb->connect(fir4, 0, clockRecovery, 0);
     tb->connect(clockRecovery, 0, multiplyConst, 0);
     tb->connect(multiplyConst, 0, slicer, 0);
     tb->connect(slicer, 0, correlate, 0);
