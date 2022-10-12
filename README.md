@@ -1,6 +1,6 @@
 # GNU-Radio Decoder
 
-![](https://img.shields.io/endpoint?url=https%3A%2F%2Fhydra.hq.c3d2.de%2Fjob%2Fdvb-dump%2Fradio-conf%2Fdefault.x86_64-linux%2Fshield) ![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+![](https://img.shields.io/endpoint?url=https%3A%2F%2Fhydra.hq.c3d2.de%2Fjob%2Fdvb-dump%2Fradio-conf%2Fdefault.x86_64-linux%2Fshield) [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
 **Contact:** <dump@dvb.solutions>
 
