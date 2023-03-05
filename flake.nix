@@ -37,6 +37,12 @@
         inherit (self.packages.${prev.system})
           gnuradio-decoder;
       };
+
+      nixosModules = rec {
+        default = gnuradio-decoder;
+        gnuradio-decoder = import ./nixos-module;
+      };
+
       hydraJobs =
         let
           hydraSystems = [
