@@ -28,6 +28,9 @@
             gnuradio-decoder = gnuradio-decoder;
             default = gnuradio-decoder;
           };
+          devShells.default = pkgs.mkShell {
+            nativeBuildInputs = (with packages.gnuradio-decoder; buildInputs ++ nativeBuildInputs);
+          };
         }
       ) // {
       overlays.default = final: prev: {
