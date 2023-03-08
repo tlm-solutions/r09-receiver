@@ -65,7 +65,16 @@ in
       enable = true;
       wantedBy = [ "multi-user.target" ];
 
-      script = "exec ${pkgs.gnuradio-decoder}/bin/gnuradio-decoder-cpp ${toString cfg.frequency} ${toString cfg.offset} ${toString cfg.RF} ${toString cfg.IF} ${toString cfg.BB} ${cfg.device} &";
+      script = "exec ${pkgs.gnuradio-decoder}/bin/gnuradio-decoder-cpp &";
+
+      environment = with cfg; {
+        "DECODER_FREQUENCY" = toString frequency;
+        "DECODER_OFFSET" = toString offset;
+        "DECODER_RF" = toString RF;
+        "DECODER_IF" = toString IF;
+        "DECODER_BB" = toString BB;
+        "DECODER_DEVICE_STRING" = device;
+      };
 
       serviceConfig = {
         Type = "forking";
