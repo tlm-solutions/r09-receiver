@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <cstdlib>
 
 #include "correlate_access_code_bb_ts_fl.h"
 #include "rational_resampler.h"
@@ -26,11 +27,11 @@
 #include <gnuradio/top_block.h>
 #include <osmosdr/source.h>
 
-void usage(char *argv0) {
-	std::cout << "Usage: " << argv0 << " {frequency} {offset} {rf} {if} {bb} [device]" << std::endl;
-}
+#include <libenvpp/env.hpp>
 
 int main(int argc, char **argv) {
+	auto pre = env::prefix("DECODER");
+
   gr::top_block_sptr tb;
 
   // Declare our GNU Radio blocks
@@ -47,8 +48,8 @@ int main(int argc, char **argv) {
   gr::blocks::tagged_stream_to_pdu::sptr taggedStreamToPdu;
   gr::blocks::socket_pdu::sptr udp_client;
 
-  float freq = 170795000;
-  float xlat_center_freq = 19500;
+  float freq;
+  float xlat_center_freq;
   float samp_rate = 2000000;
   float bandwidth_sdr = 1000000;
   float bandwidth_xlat = 5000;
@@ -58,25 +59,31 @@ int main(int argc, char **argv) {
   unsigned rs_interpolation = 24;
   unsigned rs_decimation = 25;
   float sps = samp_rate / decimation / baud * (float) rs_interpolation / (float) rs_decimation;
-	int RF, IF, BB;
-
-	std::string device_string = "";
-
-	// Argument parsing
-	if (argc != 6 && argc != 7) {
-		usage(*argv);
-		return EXIT_FAILURE;
-	}
-
-	freq = strtof(argv[1], NULL);
-	xlat_center_freq = strtof(argv[2], NULL);
-	RF = atoi(argv[3]);
-	IF = atoi(argv[4]);
-	BB = atoi(argv[5]);
-
-	if (argc == 7) {
-		device_string = std::string(argv[6]);	
-	}
+  int RF, IF, BB;
+  std::string device_string;
+  
+  const auto freq_id = pre.register_required_variable<float>("FREQUENCY");
+  const auto xlat_center_freq_id = pre.register_required_variable<float>("OFFSET");
+  const auto RF_id = pre.register_variable<int>("RF");
+  const auto IF_id = pre.register_variable<int>("IF");
+  const auto BB_id = pre.register_variable<int>("BB");
+  const auto device_string_id = pre.register_variable<std::string>("DEVICE_STRING");
+  
+  const auto parsed_and_validated_pre = pre.parse_and_validate();
+  
+  if (parsed_and_validated_pre.ok()) {
+    freq = parsed_and_validated_pre.get(freq_id);
+    xlat_center_freq = parsed_and_validated_pre.get(xlat_center_freq_id);
+    RF = parsed_and_validated_pre.get_or(RF_id, 0);
+    IF = parsed_and_validated_pre.get_or(IF_id, 0);
+    BB = parsed_and_validated_pre.get_or(BB_id, 0);
+    device_string = parsed_and_validated_pre.get_or(device_string_id, "");
+  } else {
+    std::cout << parsed_and_validated_pre.warning_message();
+    std::cout << parsed_and_validated_pre.error_message();
+    
+    return EXIT_FAILURE;
+  }
 
   std::vector<gr_complex> xlat_taps = gr::filter::firdes::complex_band_pass(
       1, samp_rate, -samp_rate / (2 * decimation), samp_rate / (2 * decimation),

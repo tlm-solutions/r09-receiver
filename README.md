@@ -6,6 +6,17 @@
 
 Service which connects to the software defined radio and does all the signal processing from reducing the noise floor to the conversion to diskrete bits. This piece of code also searches for the actual carriers and adjusts the frequency accordingly.
 
+## environment variable arguments
+
+Environment variable | description
+---|---
+DECODER\_FREQUENCY | float of the center frequency of the SDR
+DECODER\_OFFSET | float of the offset of the signal from the center frequency
+DECODER\_RF | int of RF value for SDR 
+DECODER\_IF | int of IF value for SDR 
+DECODER\_BB | int of BB value for SDR 
+DECODER\_DEVICE\_STRING | device string for osmosdr
+
 ## building with nix flakes
 
 ```

@@ -13,19 +13,20 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
 
+          libenvpp = pkgs.callPackage ./pkgs/libenvpp.nix { };
           gnuradio-decoder =
             let
               gnuradio_unwrapped = pkgs.callPackage ./pkgs/gnuradio.nix { gnuradio = pkgs.gnuradio3_8; };
             in
             pkgs.callPackage ./pkgs/gnuradio-decoder-cpp.nix {
-              gnuradio_unwrapped = gnuradio_unwrapped;
+              inherit gnuradio_unwrapped libenvpp;
               gnuradioPackages = pkgs.gnuradio3_8Packages;
             };
         in
         rec {
           checks = packages;
           packages = {
-            gnuradio-decoder = gnuradio-decoder;
+            inherit gnuradio-decoder libenvpp;
             default = gnuradio-decoder;
           };
           devShells.default = pkgs.mkShell {
