@@ -12,9 +12,6 @@
 , rtl-sdr
 , fftwFloat
 , patchelf
-, frequency ? "170795000"
-, offset ? "19500"
-, device ? "hackrf=0"
 }:
 let
   decoder-dependencies = stdenv.mkDerivation {
