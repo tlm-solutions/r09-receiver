@@ -31,10 +31,6 @@ namespace reveng {
 class correlate_access_code_bb_ts_fl_impl
     : public correlate_access_code_bb_ts_fl {
 private:
-  enum state_t { STATE_SYNC_SEARCH, STATE_HAVE_SYNC, STATE_HAVE_HEADER };
-
-  state_t d_state;
-
   unsigned long long d_access_code; // access code to locate start of packet
   //   access code is left justified in the word
   unsigned long long d_data_reg; // used to look for access_code
@@ -43,20 +39,9 @@ private:
   unsigned int d_threshold; // how many bits may be wrong in sync vector
   unsigned int d_len;       // the length of the access code
 
-  unsigned long long d_hdr_reg; // used to look for header
-  int d_hdr_count;
-
   pmt::pmt_t d_key,
       d_me; // d_key is the tag name, d_me is the block name + unique ID
-  int d_pkt_len, d_pkt_count;
-  int d_fixed_len; // fixed value from GUI or function call
-
-  void enter_search();
-  void enter_have_sync();
-  void enter_have_header(int payload_len);
-
-  bool header_ok();
-  int header_payload();
+  int d_pkt_len;
 
 public:
   correlate_access_code_bb_ts_fl_impl(const std::string &access_code,
