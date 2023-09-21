@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
   // set this to 24 to receive all possible telegrams.
   // set it to 13 to receive not more data then needed for R09.16
   correlate = gr::reveng::correlate_access_code_bb_ts_fl::make(
-      "1111110000000001", 1, "packet_len", 13);
+      "1111110000000001", 1, "packet_len", 24);
   taggedStreamToPdu = gr::blocks::tagged_stream_to_pdu::make(
       gr::blocks::pdu::vector_type::byte_t, "packet_len");
   udp_client = gr::blocks::socket_pdu::make("UDP_CLIENT", "localhost", "40000");
