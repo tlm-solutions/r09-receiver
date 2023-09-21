@@ -14,7 +14,6 @@
 #include <gnuradio/block.h>
 #include <gnuradio/filter/api.h>
 
-
 namespace gr {
 namespace filter {
 
@@ -55,36 +54,38 @@ namespace filter {
  * prefilter.
  */
 template <class IN_T, class OUT_T, class TAP_T>
-class FILTER_API rational_resampler : virtual public block
-{
+class FILTER_API rational_resampler : virtual public block {
 public:
-    typedef boost::shared_ptr<rational_resampler<IN_T, OUT_T, TAP_T>> sptr;
+  typedef boost::shared_ptr<rational_resampler<IN_T, OUT_T, TAP_T>> sptr;
 
-    /*!
-     * Make a rational resampling FIR filter.
-     *
-     * \param interpolation The integer interpolation rate of the filter
-     * \param decimation The integer decimation rate of the filter
-     * \param taps The filter taps to control images and aliases
-     * \param fractional_bw The fractional bandwidth of the filter (0 to 0.5)
-     */
-    static sptr make(unsigned interpolation,
-                     unsigned decimation,
-                     const std::vector<TAP_T>& taps = std::vector<TAP_T>(),
-                     float fractional_bw = 0.0);
+  /*!
+   * Make a rational resampling FIR filter.
+   *
+   * \param interpolation The integer interpolation rate of the filter
+   * \param decimation The integer decimation rate of the filter
+   * \param taps The filter taps to control images and aliases
+   * \param fractional_bw The fractional bandwidth of the filter (0 to 0.5)
+   */
+  static sptr make(unsigned interpolation, unsigned decimation,
+                   const std::vector<TAP_T> &taps = std::vector<TAP_T>(),
+                   float fractional_bw = 0.0);
 
-    virtual unsigned interpolation() const = 0;
-    virtual unsigned decimation() const = 0;
+  virtual unsigned interpolation() const = 0;
+  virtual unsigned decimation() const = 0;
 
-    virtual void set_taps(const std::vector<TAP_T>& taps) = 0;
-    virtual std::vector<TAP_T> taps() const = 0;
+  virtual void set_taps(const std::vector<TAP_T> &taps) = 0;
+  virtual std::vector<TAP_T> taps() const = 0;
 };
-typedef rational_resampler<gr_complex, gr_complex, gr_complex> rational_resampler_ccc;
-typedef rational_resampler<gr_complex, gr_complex, float> rational_resampler_ccf;
-typedef rational_resampler<float, gr_complex, gr_complex> rational_resampler_fcc;
+typedef rational_resampler<gr_complex, gr_complex, gr_complex>
+    rational_resampler_ccc;
+typedef rational_resampler<gr_complex, gr_complex, float>
+    rational_resampler_ccf;
+typedef rational_resampler<float, gr_complex, gr_complex>
+    rational_resampler_fcc;
 typedef rational_resampler<float, float, float> rational_resampler_fff;
 typedef rational_resampler<float, std::int16_t, float> rational_resampler_fsf;
-typedef rational_resampler<std::int16_t, gr_complex, gr_complex> rational_resampler_scc;
+typedef rational_resampler<std::int16_t, gr_complex, gr_complex>
+    rational_resampler_scc;
 
 } /* namespace filter */
 } /* namespace gr */

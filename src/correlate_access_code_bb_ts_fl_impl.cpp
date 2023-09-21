@@ -47,9 +47,9 @@ correlate_access_code_bb_ts_fl_impl::correlate_access_code_bb_ts_fl_impl(
             io_signature::make(1, 1, sizeof(char))),
       d_data_reg(0), d_mask(0), d_threshold(threshold), d_len(0) {
   set_tag_propagation_policy(TPP_DONT);
-	//set_ninput_items_required(len * 8);
-	set_min_noutput_items(len * 8);
-	set_output_multiple(len * 8);
+  // set_ninput_items_required(len * 8);
+  set_min_noutput_items(len * 8);
+  set_output_multiple(len * 8);
 
   if (!set_access_code(access_code)) {
     GR_LOG_ERROR(d_logger, "access_code is > 64 bits");
@@ -61,7 +61,7 @@ correlate_access_code_bb_ts_fl_impl::correlate_access_code_bb_ts_fl_impl(
   d_me = pmt::string_to_symbol(str.str());
   d_key = pmt::string_to_symbol(tag_name);
 
-	d_pkt_len = 8 * len;
+  d_pkt_len = 8 * len;
 }
 
 correlate_access_code_bb_ts_fl_impl::~correlate_access_code_bb_ts_fl_impl() {}
@@ -94,47 +94,48 @@ int correlate_access_code_bb_ts_fl_impl::general_work(
     int noutput_items, gr_vector_int &ninput_items,
     gr_vector_const_void_star &input_items, gr_vector_void_star &output_items) {
 
-	// Streaming correlate access code.
+  // Streaming correlate access code.
   const unsigned char *in = (const unsigned char *)input_items[0];
   unsigned char *out = (unsigned char *)output_items[0];
 
   uint64_t abs_out_sample_cnt = nitems_written(0);
 
-	int nprod = 0;
+  int nprod = 0;
 
-		// shift in new data
-		d_data_reg = (d_data_reg << 1) | (in[0] & 0x1);
+  // shift in new data
+  d_data_reg = (d_data_reg << 1) | (in[0] & 0x1);
 
-		// compute hamming distance between desired access code and current data
-		uint64_t wrong_bits = 0;
-		uint64_t nwrong = d_threshold + 1;
+  // compute hamming distance between desired access code and current data
+  uint64_t wrong_bits = 0;
+  uint64_t nwrong = d_threshold + 1;
 
-		wrong_bits = (d_data_reg ^ d_access_code) & d_mask;
-		volk_64u_popcnt(&nwrong, wrong_bits);
+  wrong_bits = (d_data_reg ^ d_access_code) & d_mask;
+  volk_64u_popcnt(&nwrong, wrong_bits);
 
-		if (nwrong <= d_threshold) {
-				if (d_pkt_len > noutput_items) {
-				GR_LOG_FATAL(d_logger,
-						boost::format("cannot write tagged stream not enough output_items available"));
-						return 0;
-				}
+  if (nwrong <= d_threshold) {
+    if (d_pkt_len > noutput_items) {
+      GR_LOG_FATAL(
+          d_logger,
+          boost::format(
+              "cannot write tagged stream not enough output_items available"));
+      return 0;
+    }
 
-				GR_LOG_DEBUG(d_logger,
-										 boost::format("writing tag at sample %llu") %
-												 (abs_out_sample_cnt));
-        // MAKE A TAG OUT OF THIS AND UPDATE OFFSET
-        add_item_tag(0,                          // stream ID
-										 abs_out_sample_cnt, // sample
-                     d_key,                      // length key
-                     pmt::from_long(d_pkt_len),  // length data
-                     d_me);                      // block src id
+    GR_LOG_DEBUG(d_logger, boost::format("writing tag at sample %llu") %
+                               (abs_out_sample_cnt));
+    // MAKE A TAG OUT OF THIS AND UPDATE OFFSET
+    add_item_tag(0,                         // stream ID
+                 abs_out_sample_cnt,        // sample
+                 d_key,                     // length key
+                 pmt::from_long(d_pkt_len), // length data
+                 d_me);                     // block src id
 
-				for (int j = 0; j < d_pkt_len; j++) {
-					out[nprod++] = in[j];
-				}
-		}
+    for (int j = 0; j < d_pkt_len; j++) {
+      out[nprod++] = in[j];
+    }
+  }
 
-	consume_each(1);
+  consume_each(1);
   return nprod;
 }
 

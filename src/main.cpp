@@ -1,9 +1,9 @@
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <string>
-#include <fstream>
-#include <cstdlib>
 
 #include "correlate_access_code_bb_ts_fl.h"
 #include "rational_resampler.h"
@@ -30,7 +30,7 @@
 #include <libenvpp/env.hpp>
 
 int main(int argc, char **argv) {
-	auto pre = env::prefix("DECODER");
+  auto pre = env::prefix("DECODER");
 
   gr::top_block_sptr tb;
 
@@ -53,24 +53,27 @@ int main(int argc, char **argv) {
   float samp_rate = 2000000;
   float bandwidth_sdr = 1000000;
   float bandwidth_xlat = 5000;
-	float transition_bw = 1000;
+  float transition_bw = 1000;
   int decimation = static_cast<int>(bandwidth_sdr / bandwidth_xlat);
   float baud = 2400;
   unsigned rs_interpolation = 24;
   unsigned rs_decimation = 25;
-  float sps = samp_rate / decimation / baud * (float) rs_interpolation / (float) rs_decimation;
+  float sps = samp_rate / decimation / baud * (float)rs_interpolation /
+              (float)rs_decimation;
   int RF, IF, BB;
   std::string device_string;
-  
+
   const auto freq_id = pre.register_required_variable<float>("FREQUENCY");
-  const auto xlat_center_freq_id = pre.register_required_variable<float>("OFFSET");
+  const auto xlat_center_freq_id =
+      pre.register_required_variable<float>("OFFSET");
   const auto RF_id = pre.register_variable<int>("RF");
   const auto IF_id = pre.register_variable<int>("IF");
   const auto BB_id = pre.register_variable<int>("BB");
-  const auto device_string_id = pre.register_variable<std::string>("DEVICE_STRING");
-  
+  const auto device_string_id =
+      pre.register_variable<std::string>("DEVICE_STRING");
+
   const auto parsed_and_validated_pre = pre.parse_and_validate();
-  
+
   if (parsed_and_validated_pre.ok()) {
     freq = parsed_and_validated_pre.get(freq_id);
     xlat_center_freq = parsed_and_validated_pre.get(xlat_center_freq_id);
@@ -81,7 +84,7 @@ int main(int argc, char **argv) {
   } else {
     std::cout << parsed_and_validated_pre.warning_message();
     std::cout << parsed_and_validated_pre.error_message();
-    
+
     return EXIT_FAILURE;
   }
 
@@ -90,7 +93,10 @@ int main(int argc, char **argv) {
       transition_bw);
   gr_vector_float fir1_taps =
       gr::filter::firdes::high_pass(1.0, samp_rate / decimation, 100, 50);
-  gr_vector_float fir2_taps = std::vector<float>({0.002334677756186128, 0.01938096025639799, 0.14012609258404307, 0.25997995536747043, 0.24015818184610402, 0.25997995536747043, 0.14012609258404307, 0.01938096025639799, 0.002334677756186128});
+  gr_vector_float fir2_taps = std::vector<float>(
+      {0.002334677756186128, 0.01938096025639799, 0.14012609258404307,
+       0.25997995536747043, 0.24015818184610402, 0.25997995536747043,
+       0.14012609258404307, 0.01938096025639799, 0.002334677756186128});
 
   tb = gr::make_top_block("fg");
 
@@ -109,19 +115,19 @@ int main(int argc, char **argv) {
   xlat = gr::filter::freq_xlating_fir_filter_ccc::make(
       decimation, xlat_taps, xlat_center_freq, samp_rate);
   resampler = gr::filter::rational_resampler_ccc::make(
-    rs_interpolation, rs_decimation, std::vector<gr_complex>(), 0.4);
+      rs_interpolation, rs_decimation, std::vector<gr_complex>(), 0.4);
   demod1 = gr::analog::quadrature_demod_cf::make(1.0);
   fir1 = gr::filter::fir_filter_fff::make(1, fir1_taps);
   hilbert = gr::filter::hilbert_fc::make(65);
   demod2 = gr::analog::quadrature_demod_cf::make(4.0);
-  addConst = gr::blocks::add_const_ff::make(-1.5*M_PI);
+  addConst = gr::blocks::add_const_ff::make(-1.5 * M_PI);
   fir2 = gr::filter::fir_filter_fff::make(1, fir2_taps);
   clockRecovery = gr::digital::clock_recovery_mm_ff::make(
       sps, 0.25f * 0.175f * 0.175f, 0.5, 0.175, 0.01);
   multiplyConst = gr::blocks::multiply_const_ff::make(-1.0f);
   slicer = gr::digital::binary_slicer_fb::make();
-	// set this to 24 to receive all possible telegrams.
-	// set it to 13 to receive not more data then needed for R09.16
+  // set this to 24 to receive all possible telegrams.
+  // set it to 13 to receive not more data then needed for R09.16
   correlate = gr::reveng::correlate_access_code_bb_ts_fl::make(
       "1111110000000001", 1, "packet_len", 13);
   taggedStreamToPdu = gr::blocks::tagged_stream_to_pdu::make(
@@ -160,7 +166,7 @@ int main(int argc, char **argv) {
 
   tb->start();
 
-	tb->wait();
+  tb->wait();
 
   return EXIT_SUCCESS;
 }
