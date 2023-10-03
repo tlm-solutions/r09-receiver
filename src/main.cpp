@@ -7,12 +7,14 @@
 
 #include "correlate_access_code_bb_ts_fl.h"
 #include "rational_resampler.h"
+#include <gnuradio/analog/frequency_modulator_fc.h>
 #include <gnuradio/analog/pwr_squelch_cc.h>
 #include <gnuradio/analog/quadrature_demod_cf.h>
 #include <gnuradio/blocks/add_const_ff.h>
 #include <gnuradio/blocks/multiply_const.h>
 #include <gnuradio/blocks/socket_pdu.h>
 #include <gnuradio/blocks/tagged_stream_to_pdu.h>
+#include <gnuradio/blocks/wavfile_source.h>
 #include <gnuradio/constants.h>
 #include <gnuradio/digital/binary_slicer_fb.h>
 #include <gnuradio/digital/clock_recovery_mm_ff.h>
@@ -21,6 +23,7 @@
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/filter/freq_xlating_fir_filter.h>
 #include <gnuradio/filter/hilbert_fc.h>
+#include <gnuradio/filter/interp_fir_filter.h>
 #include <gnuradio/logger.h>
 #include <gnuradio/prefs.h>
 #include <gnuradio/sys_paths.h>
@@ -48,8 +51,7 @@ int main(int argc, char **argv) {
   gr::blocks::tagged_stream_to_pdu::sptr taggedStreamToPdu;
   gr::blocks::socket_pdu::sptr udp_client;
 
-  float freq;
-  float xlat_center_freq;
+  float xlat_center_freq = 0;
   float samp_rate = 2000000;
   float bandwidth_sdr = 1000000;
   float bandwidth_xlat = 5000;
@@ -60,27 +62,14 @@ int main(int argc, char **argv) {
   unsigned rs_decimation = 25;
   float sps = samp_rate / decimation / baud * (float)rs_interpolation /
               (float)rs_decimation;
-  int RF, IF, BB;
-  std::string device_string;
+  std::string wav_file;
 
-  const auto freq_id = pre.register_required_variable<float>("FREQUENCY");
-  const auto xlat_center_freq_id =
-      pre.register_required_variable<float>("OFFSET");
-  const auto RF_id = pre.register_variable<int>("RF");
-  const auto IF_id = pre.register_variable<int>("IF");
-  const auto BB_id = pre.register_variable<int>("BB");
-  const auto device_string_id =
-      pre.register_variable<std::string>("DEVICE_STRING");
+  const auto wav_file_id = pre.register_variable<std::string>("WAV_FILE");
 
   const auto parsed_and_validated_pre = pre.parse_and_validate();
 
   if (parsed_and_validated_pre.ok()) {
-    freq = parsed_and_validated_pre.get(freq_id);
-    xlat_center_freq = parsed_and_validated_pre.get(xlat_center_freq_id);
-    RF = parsed_and_validated_pre.get_or(RF_id, 0);
-    IF = parsed_and_validated_pre.get_or(IF_id, 0);
-    BB = parsed_and_validated_pre.get_or(BB_id, 0);
-    device_string = parsed_and_validated_pre.get_or(device_string_id, "");
+    wav_file = parsed_and_validated_pre.get_or(wav_file_id, "");
   } else {
     std::cout << parsed_and_validated_pre.warning_message();
     std::cout << parsed_and_validated_pre.error_message();
@@ -100,17 +89,13 @@ int main(int argc, char **argv) {
 
   tb = gr::make_top_block("fg");
 
-  osmosdr::source::sptr src;
-  src = osmosdr::source::make(device_string);
-  src->set_block_alias("src");
-
-  src->set_sample_rate(samp_rate);
-  src->set_center_freq(freq);
-  src->set_gain_mode(false, 0);
-  src->set_gain(RF, "RF", 0);
-  src->set_gain(IF, "IF", 0);
-  src->set_gain(BB, "BB", 0);
-  src->set_bandwidth(bandwidth_sdr, 0);
+  auto src = gr::blocks::wavfile_source::make(wav_file.c_str(), false);
+  auto add_offset = gr::blocks::add_const_ff::make(0.1);
+  auto fm_mod = gr::analog::frequency_modulator_fc::make(1.0);
+  auto interp_fir_taps =
+      gr::filter::firdes::low_pass(1.0, samp_rate, 4500, 1000);
+  auto interp_fir = gr::filter::interp_fir_filter_ccf::make(
+      static_cast<int>(samp_rate / 16000), interp_fir_taps);
 
   xlat = gr::filter::freq_xlating_fir_filter_ccc::make(
       decimation, xlat_taps, xlat_center_freq, samp_rate);
@@ -145,7 +130,11 @@ int main(int argc, char **argv) {
             << "\n\n Compiler Flags: " << compilerFlags << "\n\n";
 
   try {
-    tb->connect(src, 0, xlat, 0);
+    tb->connect(src, 0, add_offset, 0);
+    tb->connect(add_offset, 0, fm_mod, 0);
+    tb->connect(fm_mod, 0, interp_fir, 0);
+    tb->connect(interp_fir, 0, xlat, 0);
+
     tb->connect(xlat, 0, resampler, 0);
     tb->connect(resampler, 0, demod1, 0);
     tb->connect(demod1, 0, fir1, 0);
