@@ -130,9 +130,14 @@ int correlate_access_code_bb_ts_fl_impl::general_work(
                  pmt::from_long(d_pkt_len), // length data
                  d_me);                     // block src id
 
+    std::stringstream ss;
+
     for (int j = 0; j < d_pkt_len; j++) {
       out[nprod++] = in[j];
+      ss << std::to_string(static_cast<uint8_t>(in[j]));
     }
+
+    GR_LOG_DEBUG(d_logger, boost::format(ss.str()));
   }
 
   consume_each(1);
