@@ -27,9 +27,4 @@ gnuradio.unwrapped.override {
     gr-blocktool = false;
     gr-wavelet = false;
   };
-  versionAttr = {
-    major = "3.8";
-    minor = "5";
-    patch = "0";
-  };
 }
