@@ -136,8 +136,7 @@ auto receiver_main(const int frequency, const int offset, const int RF,
                                         /*alloc=*/1.0 / tap_size);
     // do not decimate directly to the final frequency, since there will be some
     // jitter
-    unsigned decimation = samp_rate / decimation / 10;
-    auto fir = gr::filter::fir_filter_fff::make(/*decimation=*/decimation,
+    auto fir = gr::filter::fir_filter_fff::make(/*decimation=*/samp_rate / decimation / 10,
                                                 averaging_filter);
     auto populator = gr::prometheus::PrometheusGaugePopulator::make(
         /*gauge=*/stream_signal_strength);
