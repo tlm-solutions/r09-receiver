@@ -20,5 +20,5 @@ DECODER\_DEVICE\_STRING | device string for osmosdr
 ## building with nix flakes
 
 ```
-    $ nix build .\#packages.x86_64-linux.gnuradio-decoder
+    $ nix build .\#packages.x86_64-linux.r09-receiver
 ```

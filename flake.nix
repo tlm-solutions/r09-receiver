@@ -13,19 +13,19 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         libenvpp = pkgs.callPackage ./pkgs/libenvpp.nix { };
-        gnuradio-decoder = let
+        r09-receiver = let
           gnuradio_unwrapped = pkgs.callPackage ./pkgs/gnuradio.nix {
             gnuradio = pkgs.gnuradio3_8;
           };
-        in pkgs.callPackage ./pkgs/gnuradio-decoder-cpp.nix {
+        in pkgs.callPackage ./pkgs/r09-receiver.nix {
           inherit gnuradio_unwrapped libenvpp;
           gnuradioPackages = pkgs.gnuradio3_8Packages;
         };
       in rec {
         checks = packages;
         packages = {
-          inherit gnuradio-decoder libenvpp;
-          default = gnuradio-decoder;
+          inherit r09-receiver libenvpp;
+          default = r09-receiver;
           docs = (pkgs.nixosOptionsDoc {
             options = (nixpkgs.lib.nixosSystem {
               inherit system;
@@ -35,16 +35,16 @@
         };
         devShells.default = pkgs.mkShell {
           nativeBuildInputs =
-            (with packages.gnuradio-decoder; buildInputs ++ nativeBuildInputs);
+            (with packages.r09-receiver; buildInputs ++ nativeBuildInputs);
         };
       }) // {
         overlays.default = final: prev: {
-          inherit (self.packages.${prev.system}) gnuradio-decoder;
+          inherit (self.packages.${prev.system}) r09-receiver;
         };
 
         nixosModules = rec {
-          default = gnuradio-decoder;
-          gnuradio-decoder = import ./nixos-module;
+          default = r09-receiver;
+          r09-receiver = import ./nixos-module;
         };
 
         hydraJobs = let

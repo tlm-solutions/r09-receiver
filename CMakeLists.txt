@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 
-add_executable(gnuradio-decoder-cpp
+add_executable(r09-receiver
                src/main.cpp
                src/correlate_access_code_bb_ts_fl_impl.cpp
                src/rational_resampler_impl.cc)
 
-target_compile_options(gnuradio-decoder-cpp PUBLIC -std=c++17 -Wall)
+target_compile_options(r09-receiver PUBLIC -std=c++17 -Wall)
 
 include_directories(src)
 
@@ -18,6 +18,6 @@ include(${OSMOSDR_DIR}/lib/cmake/osmosdr/gnuradio-osmosdrConfig.cmake)
 
 include_directories(${GNURADIO_ALL_INCLUDE_DIRS})
 
-target_link_libraries(gnuradio-decoder-cpp log4cpp gnuradio-digital gnuradio-analog gnuradio-filter gnuradio-blocks gnuradio-fft gnuradio-runtime gnuradio-pmt volk gnuradio-osmosdr libenvpp::libenvpp)
+target_link_libraries(r09-receiver log4cpp gnuradio-digital gnuradio-analog gnuradio-filter gnuradio-blocks gnuradio-fft gnuradio-runtime gnuradio-pmt volk gnuradio-osmosdr libenvpp::libenvpp)
 
-install(TARGETS gnuradio-decoder-cpp DESTINATION bin)
+install(TARGETS r09-receiver DESTINATION bin)

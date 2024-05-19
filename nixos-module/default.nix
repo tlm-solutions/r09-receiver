@@ -1,19 +1,19 @@
 { pkgs, config, lib, ... }:
 let
-  cfg = config.TLMS.gnuradio;
+  cfg = config.TLMS.r09-receiver;
 in
 {
-  options.TLMS.gnuradio = with lib; {
+  options.TLMS.r09-receiver = with lib; {
     enable = mkOption {
       type = types.bool;
       default = false;
-      description = ''Wether to enable TLMS gnuradio reciever'';
+      description = ''Wether to enable TLMS r09-receiver'';
     };
     device = mkOption {
       type = types.str;
       default = "";
       example = "hackrf=0";
-      description = ''Device string to pass to gnuradio'';
+      description = ''Device string to pass to r09-receiver'';
     };
     frequency = mkOption {
       type = types.int;
@@ -42,13 +42,13 @@ in
     };
     user = mkOption {
       type = types.str;
-      default = "gnuradio";
-      description = "as which user gnuradio should run";
+      default = "r09-receiver";
+      description = "as which user r09-receiver should run";
     };
     group = mkOption {
       type = types.str;
-      default = "gnuradio";
-      description = "as which group gnuradio should run";
+      default = "r09-receiver";
+      description = "as which group r09-receiver should run";
     };
   };
 
@@ -59,13 +59,13 @@ in
       rtl-sdr.enable = true;
     };
 
-    environment.systemPackages = [ pkgs.gnuradio-decoder ];
+    environment.systemPackages = [ pkgs.r09-receiver ];
 
-    systemd.services."gnuradio" = {
+    systemd.services."r09-receiver" = {
       enable = true;
       wantedBy = [ "multi-user.target" ];
 
-      script = "exec ${pkgs.gnuradio-decoder}/bin/gnuradio-decoder-cpp &";
+      script = "exec ${pkgs.r09-receiver}/bin/r09-receiver &";
 
       environment = with cfg; {
         "DECODER_FREQUENCY" = toString frequency;
@@ -88,17 +88,17 @@ in
     users.groups."${cfg.group}" = { };
     users.users."${cfg.user}" = {
       name = cfg.user;
-      description = "gnu radio service user";
+      description = "r09-receiver service user";
       isNormalUser = true;
       group = cfg.group;
       extraGroups = [ "plugdev" ];
     };
 
-    security.wrappers.gnuradio-decode = {
+    security.wrappers.r09-receiver = {
       owner = cfg.user;
       group = "users";
       capabilities = "cap_sys_nice+eip";
-      source = "${pkgs.gnuradio-decoder}/bin/gnuradio-decoder-cpp";
+      source = "${pkgs.r09-receiver}/bin/r09-receiver";
     };
 
   };

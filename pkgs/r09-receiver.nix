@@ -75,8 +75,8 @@ let
     '';
   };
 
-  decoder = stdenv.mkDerivation {
-    name = "decoder";
+  r09-receiver = stdenv.mkDerivation {
+    name = "r09-receiver";
     version = "0.1.0";
 
     src = ./..;
@@ -88,24 +88,24 @@ let
   };
 in
 stdenv.mkDerivation {
-  name = "decoder-shrinked";
+  name = "r09-receiver-striped";
   version = "0.1.0";
 
-  src = decoder;
+  src = r09-receiver;
 
   phases = [ "installPhase" ];
 
   installPhase = ''
     mkdir -p $out/bin
 
-    cp $src/bin/gnuradio-decoder-cpp gnuradio-decoder-cpp
-    chmod +w gnuradio-decoder-cpp
+    cp $src/bin/r09-receiver r09-receiver
+    chmod +w r09-receiver
 
-    RPATH=$(${patchelf}/bin/patchelf --print-rpath gnuradio-decoder-cpp)
+    RPATH=$(${patchelf}/bin/patchelf --print-rpath r09-receiver)
 
-    ${patchelf}/bin/patchelf --set-rpath ${decoder-dependencies}/lib:${osmosdr-dependency}/lib:$RPATH gnuradio-decoder-cpp
-    ${patchelf}/bin/patchelf --shrink-rpath gnuradio-decoder-cpp
+    ${patchelf}/bin/patchelf --set-rpath ${decoder-dependencies}/lib:${osmosdr-dependency}/lib:$RPATH r09-receiver
+    ${patchelf}/bin/patchelf --shrink-rpath r09-receiver
 
-    cp gnuradio-decoder-cpp $out/bin/gnuradio-decoder-cpp
+    cp r09-receiver $out/bin/r09-receiver
   '';
 }

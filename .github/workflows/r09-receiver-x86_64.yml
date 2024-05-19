@@ -1,5 +1,5 @@
 
-name: "radio-conf-x86_64"
+name: "r09-receiver-x86_64"
 
 on: [push, pull_request]
 
@@ -13,4 +13,4 @@ jobs:
         with:
           name: dump-dvb
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build -vL .\#packages.x86_64-linux.gnuradio-decoder
+      - run: nix build -vL .\#packages.x86_64-linux.r09-receiver
