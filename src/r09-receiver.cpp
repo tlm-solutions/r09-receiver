@@ -8,6 +8,7 @@
 #include <gnuradio/analog/pwr_squelch_cc.h>
 #include <gnuradio/analog/quadrature_demod_cf.h>
 #include <gnuradio/blocks/add_const_ff.h>
+#include <gnuradio/blocks/complex_to_mag_squared.h>
 #include <gnuradio/blocks/multiply_const.h>
 #include <gnuradio/blocks/socket_pdu.h>
 #include <gnuradio/blocks/tagged_stream_to_pdu.h>
@@ -27,6 +28,8 @@
 #include <osmosdr/source.h>
 
 #include "correlate_access_code_bb_ts_fl.h"
+#include "prometheus.h"
+#include "prometheus_gauge_populator.h"
 #include "rational_resampler.h"
 
 static auto print_gnuradio_diagnostics() -> void {
@@ -42,7 +45,8 @@ static auto print_gnuradio_diagnostics() -> void {
 }
 
 auto receiver_main(const int frequency, const int offset, const int RF,
-                   const int IF, const int BB, const std::string &device_string)
+                   const int IF, const int BB, const std::string &device_string,
+                   std::shared_ptr<PrometheusExporter> prometheus_exporter)
     -> void {
   float samp_rate = 2000000;
   float bandwidth_sdr = 1000000;
@@ -117,6 +121,32 @@ auto receiver_main(const int frequency, const int offset, const int RF,
   tb->connect(correlate, 0, taggedStreamToPdu, 0);
   tb->msg_connect(taggedStreamToPdu, "pdus", udp_client, "pdus");
 
+  // create blocks to save the power of the current channel if prometheus
+  // exporter is available
+  if (prometheus_exporter) {
+    auto &signal_strength = prometheus_exporter->signal_strength();
+    auto &stream_signal_strength =
+        signal_strength.Add({{"frequency", std::to_string(frequency + offset)},
+                             {"name", "R09 Receiver Average Signal Strength"}});
+
+    auto mag_squared = gr::blocks::complex_to_mag_squared::make();
+    // averaging filter over one second
+    unsigned tap_size = samp_rate / decimation;
+    std::vector<float> averaging_filter(/*count=*/tap_size,
+                                        /*alloc=*/1.0 / tap_size);
+    // do not decimate directly to the final frequency, since there will be some
+    // jitter
+    unsigned decimation = tap_size / 10;
+    auto fir = gr::filter::fir_filter_fff::make(/*decimation=*/decimation,
+                                                averaging_filter);
+    auto populator = gr::prometheus::PrometheusGaugePopulator::make(
+        /*gauge=*/stream_signal_strength);
+
+    tb->connect(xlat, 0, mag_squared, 0);
+    tb->connect(mag_squared, 0, fir, 0);
+    tb->connect(fir, 0, populator, 0);
+  }
+
   print_gnuradio_diagnostics();
 
   tb->start();
@@ -130,7 +160,7 @@ auto main(int argc, char **argv) -> int {
   float frequency;
   float offset;
   int RF, IF, BB;
-  std::string device_string;
+  std::string device_string, prometheus_addr;
 
   const auto frequency_id = pre.register_required_variable<float>("FREQUENCY");
   const auto offset_id = pre.register_required_variable<float>("OFFSET");
@@ -139,6 +169,8 @@ auto main(int argc, char **argv) -> int {
   const auto BB_id = pre.register_variable<int>("BB");
   const auto device_string_id =
       pre.register_variable<std::string>("DEVICE_STRING");
+  const auto prometheus_addr_id =
+      pre.register_variable<std::string>("PROMETHEUS_ADDRESS");
 
   const auto parsed_and_validated_pre = pre.parse_and_validate();
 
@@ -149,6 +181,7 @@ auto main(int argc, char **argv) -> int {
     IF = parsed_and_validated_pre.get_or(IF_id, 0);
     BB = parsed_and_validated_pre.get_or(BB_id, 0);
     device_string = parsed_and_validated_pre.get_or(device_string_id, "");
+    prometheus_addr = parsed_and_validated_pre.get_or(prometheus_addr_id, "");
   } else {
     std::cout << parsed_and_validated_pre.warning_message();
     std::cout << parsed_and_validated_pre.error_message();
@@ -156,8 +189,15 @@ auto main(int argc, char **argv) -> int {
     return EXIT_FAILURE;
   }
 
+  std::shared_ptr<PrometheusExporter> prometheus_exporter;
+
+  if (!prometheus_addr.empty()) {
+    prometheus_exporter = std::make_shared<PrometheusExporter>(prometheus_addr);
+  }
+
   try {
-    receiver_main(frequency, offset, RF, IF, BB, device_string);
+    receiver_main(frequency, offset, RF, IF, BB, device_string,
+                  prometheus_exporter);
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;

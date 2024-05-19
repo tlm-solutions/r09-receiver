@@ -16,6 +16,7 @@ DECODER\_RF | int of RF value for SDR
 DECODER\_IF | int of IF value for SDR 
 DECODER\_BB | int of BB value for SDR 
 DECODER\_DEVICE\_STRING | device string for osmosdr
+DECODER\_PROMETHEUS\_ADDRESS | the address where the appliaction is listening on for prometheus metric extraction (Format is host:port)
 
 ## building with nix flakes
 

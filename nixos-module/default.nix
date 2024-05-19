@@ -40,6 +40,16 @@ in
       default = 42;
       description = "";
     };
+    PrometheusHost = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = ''The host of the prometheus exporter for the R09-receiver'';
+    };
+    PrometheusPort = mkOption {
+      type = types.port;
+      default = 9020;
+      description = ''The port of the prometheus exporter for the R09-receiver'';
+    };
     user = mkOption {
       type = types.str;
       default = "r09-receiver";
@@ -49,6 +59,16 @@ in
       type = types.str;
       default = "r09-receiver";
       description = "as which group r09-receiver should run";
+    };
+  };
+
+  options.services.prometheus.exporters.r09-receiver = with lib; {
+    port = mkOption {
+      type = types.port;
+      default = 9020;
+      description = lib.mdDoc ''
+        Port to listen on.
+      '';
     };
   };
 
@@ -74,6 +94,7 @@ in
         "DECODER_IF" = toString IF;
         "DECODER_BB" = toString BB;
         "DECODER_DEVICE_STRING" = device;
+        "DECODER_PROMETHEUS_ADDRESS" = "${PrometheusHost}:${toString PrometheusPort}";
       };
 
       serviceConfig = {
@@ -84,6 +105,9 @@ in
         StartLimitIntervalSec = "150s";
       };
     };
+
+    # provide the prometheus exporter information for scraping
+    services.prometheus.exporters.r09-receiver.port = cfg.PrometheusPort;
 
     users.groups."${cfg.group}" = { };
     users.users."${cfg.user}" = {

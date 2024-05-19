@@ -13,6 +13,9 @@
 , fftwFloat
 , patchelf
 , libenvpp
+, prometheus-cpp
+, zlib
+, curlFull
 }:
 let
   decoder-dependencies = stdenv.mkDerivation {
@@ -82,7 +85,7 @@ let
     src = ./..;
 
     nativeBuildInputs = [ cmake pkg-config gnuradio_unwrapped osmosdr ];
-    buildInputs = [ log4cpp mpir gnuradio_unwrapped.boost.dev gmpxx.dev gnuradio_unwrapped.volk libenvpp ];
+    buildInputs = [ log4cpp mpir gnuradio_unwrapped.boost.dev gmpxx.dev gnuradio_unwrapped.volk libenvpp prometheus-cpp zlib curlFull ];
 
     cmakeFlags = [ "-DOSMOSDR_DIR=${osmosdr}" ];
   };
