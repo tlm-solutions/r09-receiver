@@ -63,6 +63,7 @@ in
   };
 
   options.services.prometheus.exporters.r09-receiver = with lib; {
+    enable = mkEnableOption (lib.mdDoc "the prometheus ${name} exporter");
     port = mkOption {
       type = types.port;
       default = 9020;
@@ -107,6 +108,7 @@ in
     };
 
     # provide the prometheus exporter information for scraping
+    services.prometheus.exporters.r09-receiver.enable = true;
     services.prometheus.exporters.r09-receiver.port = cfg.PrometheusPort;
 
     users.groups."${cfg.group}" = { };
