@@ -130,13 +130,13 @@ auto receiver_main(const int frequency, const int offset, const int RF,
                              {"name", "R09 Receiver Average Signal Strength"}});
 
     auto mag_squared = gr::blocks::complex_to_mag_squared::make();
-    // averaging filter over one second
-    unsigned tap_size = samp_rate / decimation;
+    // averaging filter over 60 second
+    unsigned tap_size = samp_rate / decimation * 60;
     std::vector<float> averaging_filter(/*count=*/tap_size,
                                         /*alloc=*/1.0 / tap_size);
     // do not decimate directly to the final frequency, since there will be some
     // jitter
-    unsigned decimation = tap_size / 10;
+    unsigned decimation = samp_rate / decimation / 10;
     auto fir = gr::filter::fir_filter_fff::make(/*decimation=*/decimation,
                                                 averaging_filter);
     auto populator = gr::prometheus::PrometheusGaugePopulator::make(
