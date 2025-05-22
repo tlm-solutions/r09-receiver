@@ -2,7 +2,7 @@
   description = "Transit Live Mapping Solutions - R09 Receiver";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     utils.url = "github:numtide/flake-utils";
   };
